@@ -60,7 +60,6 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: const Color(0xFF1E1E1E),
       body: Stack(
         children: [
-          const GradientBack(),
           Center(
             child: AnimatedOpacity(
               opacity: _opacity,

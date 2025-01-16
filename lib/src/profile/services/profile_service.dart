@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class HomeServices {
+class ProfileService {
   Future<String> loadToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 

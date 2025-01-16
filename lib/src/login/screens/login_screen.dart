@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:des/src/home/screens/home_controller.dart';
 import 'package:des/src/home/screens/home_screen.dart';
+import 'package:des/src/login/services/login_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalConstants/images.dart';
@@ -69,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen>
       isLoading = true;
     });
 
+    // Chama a função de login
     bool success = await userLogin(
       _emailController.text,
       _passwordController.text,
@@ -86,6 +88,14 @@ class _LoginScreenState extends State<LoginScreen>
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       String token = sharedPreferences.getString('token') ?? '';
+
+      print('Token armazenado: $token');
+
+      if (token.isEmpty) {
+        print('Nenhum token foi armazenado.');
+      } else {
+        print('Token recuperado com sucesso: $token');
+      }
 
       Navigator.pushReplacement(
         context,
@@ -272,32 +282,5 @@ class _LoginScreenState extends State<LoginScreen>
         ),
       ),
     );
-  }
-
-  Future<bool> userLogin(String email, String password) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var url = Uri.parse('https://api.des.versatecnologia.com.br/api/login');
-
-    var restAwnser = await http.post(
-      url,
-      body: {
-        'email': email,
-        'password': password,
-      },
-    );
-
-    if (restAwnser.statusCode == 200) {
-      print('token' + jsonDecode(restAwnser.body)['token']);
-      final decode = jsonDecode(restAwnser.body);
-
-      await sharedPreferences.setString(
-        'token',
-        decode['token'],
-      );
-      return true;
-    } else {
-      print(jsonDecode(restAwnser.body));
-      return false;
-    }
   }
 }

@@ -74,8 +74,8 @@ class _HomePageState extends State<HomePage> {
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Icons.sports_soccer),
-              label: 'Gestão',
+              icon: Icon(Icons.emoji_events),
+              label: 'Ranking',
             ),
             NavigationDestination(
               icon: Icon(Icons.store),

@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
-import 'package:des/src/GlobalWidgets/gradient.dart';
+import 'package:des/src/home/services/home_services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class AlternateHome extends StatefulWidget {
   const AlternateHome({
@@ -16,13 +14,36 @@ class AlternateHome extends StatefulWidget {
 }
 
 class _AlternateHomeState extends State<AlternateHome> {
+  final homeService = HomeServices();
+
   Map<String, dynamic> userDados = {};
   String? token;
+  String? userName;
 
   @override
   void initState() {
     super.initState();
-    loadToken();
+    loadUser();
+  }
+
+  void loadUser() async {
+    final loadtoken = await homeService.loadToken();
+
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    userName = sharedPreferences.getString('userName');
+
+    setState(() {
+      token = loadtoken;
+
+      if (userName == null) {
+        homeService.userInfo(loadtoken).then((userInfo) {
+          setState(() {
+            userDados = userInfo!;
+            userName = userDados['name'];
+          });
+        });
+      }
+    });
   }
 
   @override
@@ -45,47 +66,14 @@ class _AlternateHomeState extends State<AlternateHome> {
           ),
         ],
         title: Text(
-          'BEM VINDO ${(userDados['name'] ?? '').toUpperCase() + '!'}',
+          'BEM VINDO ${userName?.toUpperCase() ?? ''}!', // Exibindo o nome do usuário
           style: principalFont.bold(color: Colors.white, fontSize: 25),
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: const Color(0xFF4A4A4A),
       body: const Stack(
-        children: [
-          GradientBack(),
-        ],
+        children: [],
       ),
     );
-  }
-
-  Future<void> loadToken() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      token = sharedPreferences.getString('token');
-    });
-    userInfo();
-  }
-
-  Future<void> userInfo() async {
-    if (token == null) return;
-
-    try {
-      var url = Uri.parse('https://api.des.versatecnologia.com.br/api/user');
-      var restAnswer = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (restAnswer.statusCode == 200) {
-        final decode = jsonDecode(restAnswer.body);
-        setState(() {
-          userDados = decode;
-        });
-      }
-    } catch (e) {
-      print("Erro ao recuperar informações do usuário: $e");
-    }
   }
 }

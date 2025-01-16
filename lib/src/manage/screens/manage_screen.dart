@@ -12,11 +12,9 @@ class _ManagePageState extends State<ManagePage> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Color(0xFF1E1E1E),
+      backgroundColor: Color(0xFF4A4A4A),
       body: Stack(
-        children: [
-          GradientBack(),
-        ],
+        children: [],
       ),
     );
   }
