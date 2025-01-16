@@ -1,7 +1,10 @@
+import 'package:des/src/splash/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const DesApp());
+void main() async {
+  runApp(
+    const DesApp(),
+  );
 }
 
 class DesApp extends StatefulWidget {
@@ -14,6 +17,9 @@ class DesApp extends StatefulWidget {
 class _DesAppState extends State<DesApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp();
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
+    );
   }
 }
