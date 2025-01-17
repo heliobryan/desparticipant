@@ -1,5 +1,7 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:des/src/home/screens/home_screen.dart';
-import 'package:des/src/manage/screens/manage_screen.dart';
+import 'package:des/src/rank/screens/rank_page.dart';
 import 'package:des/src/marketplace/screens/market_page.dart';
 import 'package:des/src/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +20,14 @@ class _HomePageState extends State<HomePage> {
 
   late final List<Widget> _screens;
 
+  PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
     _screens = [
       const AlternateHome(),
-      const ManagePage(),
+      const RankPage(),
       const MarketPage(),
       const ProfilePage()
     ];
@@ -32,7 +36,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[currentPageIndex],
+      body: PageView(
+        controller: _pageController,
+        physics:
+            const NeverScrollableScrollPhysics(), // Impede a navegação por swipe
+        children: _screens,
+      ),
       bottomNavigationBar: _buildBottomNavigationBar(),
       backgroundColor: const Color(0xFF1E1E1E),
     );
@@ -64,9 +73,7 @@ class _HomePageState extends State<HomePage> {
         child: NavigationBar(
           backgroundColor: const Color(0xFF1E1E1E),
           onDestinationSelected: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
+            _navigateToPage(index);
           },
           destinations: const [
             NavigationDestination(
@@ -89,5 +96,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  // Função para realizar a transição suave entre as telas
+  void _navigateToPage(int index) {
+    setState(() {
+      currentPageIndex = index;
+    });
+    _pageController.animateToPage(index,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 }

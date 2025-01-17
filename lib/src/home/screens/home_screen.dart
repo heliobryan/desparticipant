@@ -50,8 +50,7 @@ class _AlternateHomeState extends State<AlternateHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF1E1E1E),
         actions: [
           IconButton(
             icon: const Icon(
@@ -66,13 +65,22 @@ class _AlternateHomeState extends State<AlternateHome> {
           ),
         ],
         title: Text(
-          'BEM VINDO ${userName?.toUpperCase() ?? ''}!', // Exibindo o nome do usuário
+          'BEM VINDO ${userName?.toUpperCase() ?? ''}!',
           style: principalFont.bold(color: Colors.white, fontSize: 25),
         ),
       ),
       backgroundColor: const Color(0xFF4A4A4A),
-      body: const Stack(
-        children: [],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              'AVALIAÇÕES',
+              style: principalFont.medium(color: Colors.white, fontSize: 25),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,15 +1,11 @@
-// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, unused_local_variable
-import 'dart:convert';
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, unused_local_variable, avoid_print
 import 'package:des/src/home/screens/home_controller.dart';
-import 'package:des/src/home/screens/home_screen.dart';
 import 'package:des/src/login/services/login_service.dart';
-import 'package:http/http.dart' as http;
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalConstants/images.dart';
 import 'package:des/src/GlobalConstants/textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -66,11 +62,14 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Future<void> _handleLogin() async {
+    // Fecha o teclado
+    FocusScope.of(context).unfocus();
+
     setState(() {
       isLoading = true;
     });
 
-    // Chama a função de login
+    // Simulação do processo de login
     bool success = await userLogin(
       _emailController.text,
       _passwordController.text,
@@ -85,22 +84,34 @@ class _LoginScreenState extends State<LoginScreen>
         SnackBar(content: Text('Login bem-sucedido!')),
       );
 
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      String token = sharedPreferences.getString('token') ?? '';
-
-      print('Token armazenado: $token');
-
-      if (token.isEmpty) {
-        print('Nenhum token foi armazenado.');
-      } else {
-        print('Token recuperado com sucesso: $token');
-      }
+      // Animação de saída
+      await _controller.reverse();
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0); // Começa fora da tela
+            const end = Offset.zero; // Fim da transição
+            const curve = Curves.easeInOut;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var fadeTween = Tween<double>(begin: 0.0, end: 1.0);
+
+            var offsetAnimation = animation.drive(tween);
+            var fadeAnimation = animation.drive(fadeTween);
+
+            return FadeTransition(
+              opacity: fadeAnimation,
+              child: SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 700),
         ),
       );
     } else {

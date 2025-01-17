@@ -14,6 +14,7 @@ class _ExitButtonState extends State<ExitButton> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: const Color(0xFF1E1E1E),
       title: Text(
         'Tem certeza que deseja sair?',
         style: principalFont.bold(color: Colors.white, fontSize: 20),
