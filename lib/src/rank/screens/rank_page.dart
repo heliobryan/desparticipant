@@ -1,7 +1,7 @@
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
-import 'package:des/src/profile/datauser/data_user.dart';
-import 'package:des/src/rank/widgets/ranking_card.dart';
+import 'package:des/src/rank/widgets/rank_card.dart';
+
 import 'package:flutter/material.dart';
 
 class RankPage extends StatefulWidget {
@@ -36,12 +36,23 @@ class _RankPageState extends State<RankPage> {
           style: principalFont.medium(color: Colors.white, fontSize: 20),
         ),
       ),
-      backgroundColor: const Color(0xFF4A4A4A),
+      backgroundColor: const Color(0xFF121212),
       body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RankingCard(),
+            RankCard(),
+            SizedBox(height: 5),
+            RankCard(),
+            SizedBox(height: 5),
+            RankCard(),
+            SizedBox(height: 5),
+            RankCard(),
+            SizedBox(height: 5),
+            RankCard(),
+            SizedBox(height: 5),
+            RankCard(),
+            SizedBox(height: 5),
           ],
         ),
       ),

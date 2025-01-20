@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
         children: _screens,
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: const Color(0xFF2A0C55),
     );
   }
 

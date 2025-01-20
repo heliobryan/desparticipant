@@ -1,4 +1,3 @@
-import 'package:des/src/GlobalConstants/font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 
@@ -14,12 +13,12 @@ class RadarGraph extends StatelessWidget {
         child: RadarChart(
           ticks: [20, 40, 60, 80, 100],
           features: [
-            'Físico',
-            'Ritmo',
-            'Finalização',
-            'Passe',
-            'Agilidade',
-            'Drible',
+            'Físico', //FÍS
+            'Ritmo', //RIT
+            'Finalização', //FIN
+            'Passe', //PAS
+            'Agilidade', //AGI
+            'Drible', //DRI
           ],
           data: [
             [50, 70, 60, 80, 90, 60],

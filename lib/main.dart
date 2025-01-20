@@ -1,4 +1,4 @@
-import 'package:des/src/splash/screens/splash_screen.dart';
+import 'package:des/src/home/screens/home_controller.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -19,7 +19,7 @@ class _DesAppState extends State<DesApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: HomePage(),
     );
   }
 }

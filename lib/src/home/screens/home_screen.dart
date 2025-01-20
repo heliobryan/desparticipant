@@ -69,7 +69,7 @@ class _AlternateHomeState extends State<AlternateHome> {
           style: principalFont.bold(color: Colors.white, fontSize: 25),
         ),
       ),
-      backgroundColor: const Color(0xFF4A4A4A),
+      backgroundColor: const Color(0xFF121212),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

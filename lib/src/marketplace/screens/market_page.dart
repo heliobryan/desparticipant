@@ -51,7 +51,7 @@ class _MarketPageState extends State<MarketPage> {
           style: principalFont.medium(color: Colors.white, fontSize: 20),
         ),
       ),
-      backgroundColor: const Color(0xFF4A4A4A),
+      backgroundColor: const Color(0xFF121212),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

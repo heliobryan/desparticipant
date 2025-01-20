@@ -62,14 +62,12 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Future<void> _handleLogin() async {
-    // Fecha o teclado
     FocusScope.of(context).unfocus();
 
     setState(() {
       isLoading = true;
     });
 
-    // Simulação do processo de login
     bool success = await userLogin(
       _emailController.text,
       _passwordController.text,
@@ -84,7 +82,6 @@ class _LoginScreenState extends State<LoginScreen>
         SnackBar(content: Text('Login bem-sucedido!')),
       );
 
-      // Animação de saída
       await _controller.reverse();
 
       Navigator.pushReplacement(
@@ -92,8 +89,8 @@ class _LoginScreenState extends State<LoginScreen>
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 1.0); // Começa fora da tela
-            const end = Offset.zero; // Fim da transição
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
             const curve = Curves.easeInOut;
 
             var tween =
@@ -124,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: const Color(0xFF121212),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
