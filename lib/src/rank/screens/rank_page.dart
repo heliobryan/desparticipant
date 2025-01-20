@@ -1,5 +1,7 @@
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
+import 'package:des/src/rank/widgets/filter_gender.dart';
+import 'package:des/src/rank/widgets/filter_rank.dart';
 import 'package:des/src/rank/widgets/rank_card.dart';
 
 import 'package:flutter/material.dart';
@@ -37,22 +39,39 @@ class _RankPageState extends State<RankPage> {
         ),
       ),
       backgroundColor: const Color(0xFF121212),
-      body: const Center(
+      body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            RankCard(),
-            SizedBox(height: 5),
-            RankCard(),
-            SizedBox(height: 5),
-            RankCard(),
-            SizedBox(height: 5),
-            RankCard(),
-            SizedBox(height: 5),
-            RankCard(),
-            SizedBox(height: 5),
-            RankCard(),
-            SizedBox(height: 5),
+            const SizedBox(height: 50),
+            Text(
+              'FILTROS',
+              style: principalFont.medium(color: Colors.white, fontSize: 20),
+            ),
+            const SizedBox(height: 10),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FilterRank(),
+                SizedBox(width: 10),
+                FilterGender(),
+              ],
+            ),
+            const SizedBox(height: 25),
+            const RankCard(),
+            const SizedBox(height: 5),
+            const RankCard(),
+            const SizedBox(height: 5),
+            const RankCard(),
+            const SizedBox(height: 5),
+            const RankCard(),
+            const SizedBox(height: 5),
+            const RankCard(),
+            const SizedBox(height: 5),
+            const RankCard(),
+            const SizedBox(height: 5),
+            const RankCard(),
+            const SizedBox(height: 5),
           ],
         ),
       ),
