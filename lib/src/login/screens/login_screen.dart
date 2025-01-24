@@ -1,5 +1,5 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors, unused_local_variable, avoid_print
-import 'package:des/src/home/screens/home_controller.dart';
+import 'package:des/src/home/controller/home_controller.dart';
 import 'package:des/src/login/services/login_service.dart';
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalConstants/images.dart';

@@ -2,6 +2,7 @@
 
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
+import 'package:des/src/home/widgets/avaliation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

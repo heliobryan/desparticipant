@@ -22,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage>
   String? userId;
   String? category;
   String? position;
+  String? name;
 
   bool _isPlayerCardVisible = false;
   bool _isRadarGraphVisible = false;
@@ -32,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   void initState() {
     super.initState();
+    debugPrint("Inicializando ProfilePage...");
     loadUserData();
 
     _controller = AnimationController(
@@ -50,25 +52,67 @@ class _ProfilePageState extends State<ProfilePage>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
+  // Função para carregar os dados do usuário
   Future<void> loadUserData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
+    // Verifica se os dados já estão salvos no SharedPreferences
     userName = sharedPreferences.getString('userName');
     userId = sharedPreferences.getString('userId');
     category = sharedPreferences.getString('category');
     position = sharedPreferences.getString('position');
 
-    setState(() {});
+    // Se os dados estiverem salvos, não faz a requisição novamente
+    if (userName != null &&
+        userId != null &&
+        category != null &&
+        position != null) {
+      debugPrint("Dados encontrados no SharedPreferences.");
+      setState(() {
+        // Atualiza o estado com os dados salvos
+      });
+    } else {
+      debugPrint(
+          "Dados não encontrados no SharedPreferences, buscando na API...");
+      String token = await homeService.loadToken();
+      final responseData = await homeService.fetchParticipantDetails(token);
+
+      if (responseData != null) {
+        // Dados recebidos da API
+        debugPrint("Dados recebidos no loadUserData: $responseData");
+
+        final participant = responseData;
+        final user = participant['user'] ?? {};
+
+        setState(() {
+          userName = user['name'] ?? 'Sem Nome';
+          userId = user['id'] != null ? user['id'].toString() : 'Sem ID';
+          category = participant['category'] ?? 'Sem Categoria';
+          position = participant['position'] ?? 'Sem Posição';
+        });
+
+        // Salva as informações no SharedPreferences para futuras consultas
+        await sharedPreferences.setString('userName', userName ?? '');
+        await sharedPreferences.setString('userId', userId ?? '');
+        await sharedPreferences.setString('category', category ?? '');
+        await sharedPreferences.setString('position', position ?? '');
+      } else {
+        debugPrint("Falha ao obter os dados do participante.");
+      }
+    }
   }
 
   void togglePlayerCard() {
+    debugPrint("Toggling Player Card...");
     if (_isPlayerCardVisible) {
+      debugPrint("Escondendo Player Card");
       _controller.reverse().then((_) {
         setState(() {
           _isPlayerCardVisible = false;
         });
       });
     } else {
+      debugPrint("Exibindo Player Card");
       setState(() {
         _isPlayerCardVisible = true;
       });
@@ -77,13 +121,16 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   void toggleRadarGraph() {
+    debugPrint("Toggling Radar Graph...");
     if (_isRadarGraphVisible) {
+      debugPrint("Escondendo Radar Graph");
       _controller.reverse().then((_) {
         setState(() {
           _isRadarGraphVisible = false;
         });
       });
     } else {
+      debugPrint("Exibindo Radar Graph");
       setState(() {
         _isRadarGraphVisible = true;
       });
@@ -93,12 +140,14 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   void dispose() {
+    debugPrint("Disposing ProfilePage...");
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Construindo a interface do usuário...");
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
@@ -150,13 +199,11 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   ],
                 ),
-                Text(
-                  'ID: ${(userId ?? 'Carregando...')}',
-                  style: principalFont.regular(
-                      color: Colors.transparent, fontSize: 18),
+                SizedBox(
+                  height: 20,
                 ),
                 Text(
-                  (userName ?? '').toUpperCase(),
+                  (userName ?? 'Carregando...').toUpperCase(),
                   style:
                       principalFont.medium(color: Colors.white, fontSize: 30),
                 ),
@@ -214,6 +261,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: GestureDetector(
                 onTap: togglePlayerCard,
                 child: Container(
+                  // ignore: deprecated_member_use
                   color: Colors.black.withOpacity(0.5),
                   child: Center(
                     child: FadeTransition(
@@ -232,7 +280,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: GestureDetector(
                 onTap: toggleRadarGraph,
                 child: Container(
-                  color: Color(0xFF121212),
+                  color: const Color(0xFF121212),
                   child: Center(
                     child: FadeTransition(
                       opacity: _opacityAnimation,
@@ -242,7 +290,7 @@ class _ProfilePageState extends State<ProfilePage>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              color: Color(0xFF121212),
+                              color: const Color(0xFF121212),
                               child: const RadarGraph(),
                             ),
                           ],

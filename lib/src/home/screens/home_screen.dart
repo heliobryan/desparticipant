@@ -1,13 +1,13 @@
+import 'dart:developer';
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/services/home_services.dart';
+import 'package:des/src/home/widgets/avaliation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AlternateHome extends StatefulWidget {
-  const AlternateHome({
-    super.key,
-  });
+  const AlternateHome({super.key});
 
   @override
   State<AlternateHome> createState() => _AlternateHomeState();
@@ -16,9 +16,11 @@ class AlternateHome extends StatefulWidget {
 class _AlternateHomeState extends State<AlternateHome> {
   final homeService = HomeServices();
 
-  Map<String, dynamic> userDados = {};
-  String? token;
+  String? userId;
   String? userName;
+  String? participantId;
+  List<dynamic>? judgments = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -27,23 +29,77 @@ class _AlternateHomeState extends State<AlternateHome> {
   }
 
   void loadUser() async {
-    final loadtoken = await homeService.loadToken();
+    try {
+      log("[loadUser] Iniciando carregamento do usuário...");
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
 
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    userName = sharedPreferences.getString('userName');
+      userName = sharedPreferences.getString('userName');
+      userId = sharedPreferences.getString('userId');
+      participantId = sharedPreferences.getString('participantId');
 
-    setState(() {
-      token = loadtoken;
+      if (userName != null && userId != null && participantId != null) {
+        log("[loadUser] Dados do usuário encontrados no SharedPreferences.");
 
-      if (userName == null) {
-        homeService.userInfo(loadtoken).then((userInfo) {
+        final loadtoken = await homeService.loadToken();
+        final evalId = await homeService.fetchEvaluationId(
+            loadtoken, int.parse(participantId!));
+
+        log("[loadUser] evaluation_id retornado: $evalId");
+
+        if (evalId != null) {
+          final fetchedJudgments =
+              await homeService.fetchJudgments(loadtoken, evalId);
+
+          log("[loadUser] Julgamentos retornados: $fetchedJudgments");
+
           setState(() {
-            userDados = userInfo!;
-            userName = userDados['name'];
+            judgments = fetchedJudgments ?? [];
+            isLoading = false;
           });
+        }
+      } else {
+        log("[loadUser] Informações não encontradas no SharedPreferences. Buscando na API...");
+        final loadtoken = await homeService.loadToken();
+        final data = await homeService.userInfo(loadtoken);
+
+        log("[loadUser] Dados do usuário carregados da API: $data");
+
+        setState(() {
+          userName = data?['name'] ?? 'N/A';
+          userId = data?['id']?.toString() ?? 'N/A';
+          participantId = data?['participant']?['id']?.toString() ?? 'N/A';
         });
+
+        sharedPreferences.setString('userName', userName ?? '');
+        sharedPreferences.setString('userId', userId ?? '');
+        sharedPreferences.setString('participantId', participantId ?? '');
+
+        final evalId = await homeService.fetchEvaluationId(
+            loadtoken, int.parse(participantId!));
+
+        log("[loadUser] evaluation_id retornado após requisição: $evalId");
+
+        if (evalId != null) {
+          final fetchedJudgments =
+              await homeService.fetchJudgments(loadtoken, evalId);
+
+          log("[loadUser] Julgamentos retornados: $fetchedJudgments");
+
+          setState(() {
+            judgments = fetchedJudgments ?? [];
+            isLoading = false;
+          });
+        }
       }
-    });
+
+      log("[loadUser] Finalizado carregamento de informações.");
+    } catch (e) {
+      log("[loadUser] Erro ao carregar o usuário: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -70,18 +126,53 @@ class _AlternateHomeState extends State<AlternateHome> {
         ),
       ),
       backgroundColor: const Color(0xFF121212),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              'AVALIAÇÕES',
-              style: principalFont.medium(color: Colors.white, fontSize: 25),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            )
+          : Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  color: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(
+                    'AVALIAÇÕES',
+                    style: principalFont.bold(
+                      color: Colors.white,
+                      fontSize: 22,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: judgments!.map((judgment) {
+                          return Column(
+                            children: [
+                              AvaliationView(
+                                evaluationName:
+                                    judgment['item']['name'] ?? 'N/A',
+                                result: judgment['score']?.toString() ?? 'N/A',
+                                finalScore:
+                                    judgment['score']?.toString() ?? 'N/A',
+                              ),
+                              const SizedBox(height: 30),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
     );
   }
 }

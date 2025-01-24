@@ -24,7 +24,7 @@ class ProfileService {
       );
 
       log("Response status: ${response.statusCode}");
-      log("Response body: ${response.body}");
+      log("Response body: ${fetchParticipantDetails(token)}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

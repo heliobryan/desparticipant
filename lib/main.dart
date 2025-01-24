@@ -1,4 +1,3 @@
-import 'package:des/src/home/screens/home_controller.dart';
 import 'package:des/src/splash/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
