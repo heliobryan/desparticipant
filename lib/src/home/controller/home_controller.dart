@@ -29,7 +29,11 @@ class _HomePageState extends State<HomePage> {
       const AlternateHome(),
       const RankPage(),
       const MarketPage(),
-      const ProfilePage()
+      const ProfilePage(
+        evaluationName: '',
+        result: '',
+        finalScore: '',
+      )
     ];
   }
 

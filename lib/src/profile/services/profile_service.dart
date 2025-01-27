@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileService {
   // Método para carregar o token
@@ -24,7 +23,7 @@ class ProfileService {
       );
 
       log("Response status: ${response.statusCode}");
-      log("Response body: ${fetchParticipantDetails(token)}");
+      log("Response body: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -73,6 +72,77 @@ class ProfileService {
       }
     } catch (e) {
       log('Error fetching participant details: $e');
+    }
+    return null;
+  }
+
+  // Buscar o score do julgamento baseado no evaluationId
+  Future<String?> fetchScore(String token, int evaluationId) async {
+    final url = Uri.parse(
+      'https://api.des.versatecnologia.com.br/api/evaluations/$evaluationId',
+    );
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      log('[fetchScore] Response status: ${response.statusCode}');
+      log('[fetchScore] Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        log('[fetchScore] Dados retornados do julgamento: $data');
+        if (data['judgments'] != null && data['judgments'].isNotEmpty) {
+          final score = data['judgments'][0]['score'];
+          log('[fetchScore] Score encontrado: $score');
+          return score;
+        } else {
+          log('[fetchScore] Nenhuma avaliação encontrada no campo judgments.');
+        }
+      } else {
+        log('[fetchScore] Erro na requisição: ${response.statusCode}');
+      }
+    } catch (e) {
+      log('[fetchScore] Erro ao buscar score: $e');
+    }
+
+    log('[fetchScore] Retornando null para o score.');
+    return null;
+  }
+
+  // Buscar todos os julgamentos
+  Future<Map<String, dynamic>?> fetchParticipantScores(
+      String token, String participantId) async {
+    try {
+      log("Fetching participant scores for participant ID: $participantId");
+
+      var url = Uri.parse(
+          'https://api.des.versatecnologia.com.br/api/participant/$participantId/scores');
+      var response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      log("Response status: ${response.statusCode}");
+      log("Response body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // Retorna os scores do participante
+        return data['scores']; // Supondo que o JSON tenha a chave 'scores'
+      } else {
+        log("Unexpected error: ${response.statusCode}");
+      }
+    } catch (e) {
+      log('Error fetching participant scores: $e');
     }
     return null;
   }

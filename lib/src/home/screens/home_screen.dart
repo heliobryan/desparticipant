@@ -3,11 +3,17 @@ import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/services/home_services.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
+import 'package:des/src/home/widgets/viewResults.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AlternateHome extends StatefulWidget {
-  const AlternateHome({super.key});
+  const AlternateHome(
+      {super.key,
+      String? userName,
+      String? userId,
+      String? participantId,
+      List? judgments});
 
   @override
   State<AlternateHome> createState() => _AlternateHomeState();
@@ -162,6 +168,7 @@ class _AlternateHomeState extends State<AlternateHome> {
                                 result: judgment['score']?.toString() ?? 'N/A',
                                 finalScore:
                                     judgment['score']?.toString() ?? 'N/A',
+                                itemId: judgment['item']['id'], // Passar itemId
                               ),
                               const SizedBox(height: 30),
                             ],
@@ -170,6 +177,11 @@ class _AlternateHomeState extends State<AlternateHome> {
                       ),
                     ),
                   ),
+                ),
+                const ViewResults(
+                  finalScore: '',
+                  evaluationName: '',
+                  result: '',
                 ),
               ],
             ),

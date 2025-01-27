@@ -9,7 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final String evaluationName;
+  final String result;
+  final String finalScore;
+
+  const ProfilePage({
+    super.key,
+    required this.evaluationName,
+    required this.result,
+    required this.finalScore,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -199,9 +208,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Text(
                   (userName ?? 'Carregando...').toUpperCase(),
                   style:
@@ -230,6 +237,24 @@ class _ProfilePageState extends State<ProfilePage>
                   ],
                 ),
                 const SizedBox(height: 10),
+                Text(
+                  'Avaliação: ${widget.evaluationName}',
+                  style:
+                      principalFont.medium(color: Colors.white, fontSize: 20),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Resultado: ${widget.result}',
+                  style:
+                      principalFont.medium(color: Colors.white, fontSize: 18),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Nota Final: ${widget.finalScore}',
+                  style:
+                      principalFont.medium(color: Colors.white, fontSize: 18),
+                ),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
