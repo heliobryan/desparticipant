@@ -25,22 +25,22 @@ class DadosUser extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           Text(
-            'PESO: 50 KG', //PESO
+            'PESO: 50 KG', // PESO
             style: principalFont.medium(color: Colors.white, fontSize: 20),
           ),
           const SizedBox(height: 20),
           Text(
-            'ALTURA: 150 CM', //ALTURA
+            'ALTURA: 150 CM', // ALTURA
             style: principalFont.medium(color: Colors.white, fontSize: 20),
           ),
           const SizedBox(height: 20),
           Text(
-            'IDADE: 13', //IDADE
+            'IDADE: 13', // IDADE
             style: principalFont.medium(color: Colors.white, fontSize: 20),
           ),
           const SizedBox(height: 20),
           Text(
-            'IMC: 20', //MEDE O IMC
+            'IMC: 20', // IMC
             style: principalFont.medium(color: Colors.white, fontSize: 20),
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/services/home_services.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
 import 'package:des/src/home/widgets/viewResults.dart';
+import 'package:des/src/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -159,29 +160,67 @@ class _AlternateHomeState extends State<AlternateHome> {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
-                        children: judgments!.map((judgment) {
-                          return Column(
-                            children: [
-                              AvaliationView(
-                                evaluationName:
-                                    judgment['item']['name'] ?? 'N/A',
-                                result: judgment['score']?.toString() ?? 'N/A',
-                                finalScore:
-                                    judgment['score']?.toString() ?? 'N/A',
-                                itemId: judgment['item']['id'], // Passar itemId
-                              ),
-                              const SizedBox(height: 30),
-                            ],
-                          );
-                        }).toList(),
+                        children: [
+                          // Mapeando os "AvaliationView" e colocando em uma lista
+                          ...judgments!.map((judgment) {
+                            return Column(
+                              children: [
+                                AvaliationView(
+                                  evaluationName:
+                                      judgment['item']['name'] ?? 'N/A',
+                                  result:
+                                      judgment['score']?.toString() ?? 'N/A',
+                                  finalScore:
+                                      judgment['score']?.toString() ?? 'N/A',
+                                  itemId: judgment['item']['id'],
+                                  allEvaluations: [], // Deixe vazio, pois vamos coletar esses dados no clique do botão
+                                ),
+                                const SizedBox(height: 30),
+                              ],
+                            );
+                          }).toList(),
+
+                          // Botão para enviar todas as informações para a ProfilePage
+                          ElevatedButton(
+                            onPressed: () {
+                              // Criando uma lista de objetos AvaliationView
+                              List<AvaliationView> allEvaluations =
+                                  judgments!.map((judgment) {
+                                return AvaliationView(
+                                  evaluationName:
+                                      judgment['item']['name'] ?? 'N/A',
+                                  result:
+                                      judgment['score']?.toString() ?? 'N/A',
+                                  finalScore:
+                                      judgment['score']?.toString() ?? 'N/A',
+                                  itemId: judgment['item']
+                                      ['id'], // Passando o itemId
+                                  allEvaluations: [], // Passar vazio aqui por enquanto
+                                );
+                              }).toList();
+
+                              // Passando a lista de objetos AvaliationView para a ProfilePage
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                    allEvaluations: allEvaluations,
+                                    evaluationName:
+                                        '', // Passe o nome da avaliação
+                                    result:
+                                        '', // Passe o resultado da avaliação
+                                    finalScore:
+                                        '', // Passe a pontuação final da avaliação
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text('Ver todas as avaliações'),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                ),
-                const ViewResults(
-                  finalScore: '',
-                  evaluationName: '',
-                  result: '',
                 ),
               ],
             ),

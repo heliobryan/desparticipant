@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
+import 'package:des/src/home/widgets/avaliation_view.dart';
 import 'package:des/src/profile/cards/card.dart';
+import 'package:des/src/profile/datauser/data_user.dart';
 import 'package:des/src/profile/graph/graph.dart';
 import 'package:des/src/profile/services/profile_service.dart';
 import 'package:des/src/profile/widgets/data_card.dart';
@@ -13,11 +17,15 @@ class ProfilePage extends StatefulWidget {
   final String result;
   final String finalScore;
 
+  final List<AvaliationView>
+      allEvaluations; // Adicionando a lista de avaliações
+
   const ProfilePage({
     super.key,
     required this.evaluationName,
     required this.result,
     required this.finalScore,
+    required this.allEvaluations, // Certificando que a lista é passada no construtor
   });
 
   @override
@@ -35,14 +43,19 @@ class _ProfilePageState extends State<ProfilePage>
 
   bool _isPlayerCardVisible = false;
   bool _isRadarGraphVisible = false;
+  bool _isDatacard = false;
   late final AnimationController _controller;
   late final Animation<double> _opacityAnimation;
   late final Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
+    log("Dados recebidos na ProfilePage:");
+    log("evaluationName: ${widget.evaluationName}");
+    log("result: ${widget.result}");
+    log("finalScore: ${widget.finalScore}");
     super.initState();
-    debugPrint("Inicializando ProfilePage...");
+    log("Inicializando ProfilePage...");
     loadUserData();
 
     _controller = AnimationController(
@@ -147,11 +160,116 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
+  void toggleDadosUser() {
+    debugPrint("Toggling Radar Graph...");
+    if (_isDatacard) {
+      debugPrint("Escondendo Radar Graph");
+      _controller.reverse().then((_) {
+        setState(() {
+          _isDatacard = false;
+        });
+      });
+    } else {
+      debugPrint("Exibindo Radar Graph");
+      setState(() {
+        _isDatacard = true;
+      });
+      _controller.forward();
+    }
+  }
+
   @override
   void dispose() {
     debugPrint("Disposing ProfilePage...");
     _controller.dispose();
     super.dispose();
+  }
+
+  // Função para calcular a nota final
+  String calculateFinalScore(int? itemId, double score) {
+    if (itemId == 16) {
+      if (score <= 140) {
+        return (70 + (score / 140) * 10).toStringAsFixed(1); // De 70 a 80
+      } else if (score <= 160) {
+        return (80 + ((score - 140) / 20) * 5).toStringAsFixed(1); // De 80 a 85
+      } else if (score <= 180) {
+        return (85 + ((score - 160) / 20) * 15)
+            .toStringAsFixed(1); // De 85 a 100
+      }
+    } else if (itemId == 17) {
+      if (score <= 35) {
+        return '80'; // Para score <= 35
+      } else if (score <= 45) {
+        return '85'; // Para score entre 35 e 45
+      } else if (score <= 60) {
+        return '90'; // Para score entre 40 e 60
+      }
+    } else if (itemId == 59) {
+      final adjustedScore = score - 2;
+      if (adjustedScore < 15) {
+        return '100';
+      } else if (adjustedScore >= 16 && adjustedScore <= 17) {
+        return '90'; // Score ajustado entre 16 e 17
+      } else if (adjustedScore > 17 && adjustedScore <= 22) {
+        final proportionalScore =
+            90 - ((adjustedScore - 17) / (22 - 17) * 20); // De 90 a 70
+        return proportionalScore.toStringAsFixed(1);
+      } else if (adjustedScore > 23) {
+        return '70'; // Score ajustado > 23
+      }
+    } else if (itemId == 60) {
+      if (score < 15) {
+        return '100'; // Score < 15
+      } else if (score >= 16 && score <= 17) {
+        return '90'; // Score entre 16 e 17
+      } else if (score > 17 && score <= 22) {
+        final proportionalScore =
+            90 - ((score - 17) / (22 - 17) * 20); // De 90 a 70
+        return proportionalScore.toStringAsFixed(1);
+      } else if (score > 23) {
+        return '70'; // Score > 23
+      }
+    } else if (itemId == 61) {
+      if (score <= 1.8) {
+        return '100'; // Score <= 1.8
+      } else if (score > 1.8 && score <= 2.5) {
+        final proportionalScore =
+            100 - ((score - 1.8) / (2.5 - 1.8) * 20); // De 100 a 80
+        return proportionalScore.toStringAsFixed(1);
+      } else if (score > 2.5) {
+        final proportionalScore =
+            60 + ((score - 2.5) / (3.5 - 2.5) * 10); // De 60 a 70
+        return proportionalScore.clamp(60, 70).toStringAsFixed(1);
+      }
+    } else if (itemId == 62) {
+      if (score >= 120 && score <= 150) {
+        return '85'; // Score entre 120 e 150
+      } else if (score > 150 && score <= 170) {
+        return '90'; // Score entre 150 e 170
+      } else if (score > 170) {
+        // Proporcional de 90 a 100
+        final proportionalScore =
+            90 + ((score - 170) / (180 - 170) * 10); // De 90 a 100
+        return proportionalScore.clamp(90, 100).toStringAsFixed(1);
+      }
+    } else if (itemId == 41) {
+      if (score <= 60) {
+        return '60'; // Score <= 60
+      } else if (score > 60 && score <= 70) {
+        return '80'; // Score entre 60 e 70
+      } else if (score > 70 && score <= 80) {
+        return '90'; // Score entre 70 e 80
+      } else if (score > 100) {
+        // Proporcional acima de 100 até 100
+        final proportionalScore =
+            100 - ((score - 100) / (120 - 100) * 20); // De 100 a 100 (clamp)
+        return proportionalScore.clamp(100, 100).toStringAsFixed(1);
+      }
+    } else if (itemId == 54 || itemId == 55 || itemId == 56 || itemId == 35) {
+      // Lógica simples: cada 1 no score equivale a 10
+      return (score * 10).toStringAsFixed(1);
+    }
+    return score.toStringAsFixed(1); // Retorna o score padrão para outros itens
   }
 
   @override
@@ -237,23 +355,6 @@ class _ProfilePageState extends State<ProfilePage>
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  'Avaliação: ${widget.evaluationName}',
-                  style:
-                      principalFont.medium(color: Colors.white, fontSize: 20),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Resultado: ${widget.result}',
-                  style:
-                      principalFont.medium(color: Colors.white, fontSize: 18),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Nota Final: ${widget.finalScore}',
-                  style:
-                      principalFont.medium(color: Colors.white, fontSize: 18),
-                ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -274,10 +375,35 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const DataCard(),
+                    DataCard(onPressed: toggleDadosUser),
                   ],
                 ),
                 const SizedBox(height: 25),
+                SizedBox(
+                  width: 50, // Largura fixa
+                  height: 50, // Altura fixa
+                  child: Visibility(
+                    visible:
+                        false, // A lista ficará invisível, mas com espaço ocupado
+                    child: ListView.builder(
+                      itemCount: widget.allEvaluations.length,
+                      itemBuilder: (context, index) {
+                        final evaluation = widget.allEvaluations[index];
+                        return ListTile(
+                          title: Text(evaluation.evaluationName),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Resultado: ${evaluation.result}'),
+                              Text(
+                                  'Nota Final: ${calculateFinalScore(evaluation.itemId, double.parse(evaluation.result))}'),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -317,6 +443,32 @@ class _ProfilePageState extends State<ProfilePage>
                             Container(
                               color: const Color(0xFF121212),
                               child: const RadarGraph(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          if (_isDatacard)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: toggleDadosUser,
+                child: Container(
+                  color: const Color(0xFF121212),
+                  child: Center(
+                    child: FadeTransition(
+                      opacity: _opacityAnimation,
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              color: const Color(0xFF121212),
+                              child: const DadosUser(),
                             ),
                           ],
                         ),
