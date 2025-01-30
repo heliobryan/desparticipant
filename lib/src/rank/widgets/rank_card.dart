@@ -1,14 +1,15 @@
 import 'package:des/src/GlobalConstants/font.dart';
+import 'package:des/src/home/services/home_services.dart';
+import 'package:des/src/rank/services/rankservice.dart';
 import 'package:flutter/material.dart';
+import 'package:des/src/home/services/home_services.dart';
+import '../../home/services/home_services.dart';
 
-class RankCard extends StatefulWidget {
-  const RankCard({super.key});
+class RankCard extends StatelessWidget {
+  final home.Participant participant; // Ajustando para o tipo correto
 
-  @override
-  State<RankCard> createState() => _RankCardState();
-}
+  const RankCard({super.key, required this.participant});
 
-class _RankCardState extends State<RankCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -60,7 +61,7 @@ class _RankCardState extends State<RankCard> {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'RICARDO COSTA', // NOME DO ATLETA
+                      participant.user.name, // Usando o nome do participante
                       style: principalFont.bold(
                         color: const Color(0xFFB0B0B0),
                         fontSize: 14,
@@ -73,7 +74,7 @@ class _RankCardState extends State<RankCard> {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'LATERAL DIREITO - SUB 13', // POSIÇÃO E SUB
+                      '${participant.position} - ${participant.category}', // Exibindo posição e categoria
                       style: principalFont.bold(
                         color: const Color(0xFFB0B0B0),
                         fontSize: 8,
@@ -86,7 +87,7 @@ class _RankCardState extends State<RankCard> {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'ESCOLA DO FLAMENGO', // INSTITUIÇÃO
+                      participant.team.name, // Exibindo time
                       style: principalFont.bold(
                         color: const Color(0xFFB0B0B0),
                         fontSize: 8,
@@ -110,7 +111,8 @@ class _RankCardState extends State<RankCard> {
               ),
               child: Center(
                 child: Text(
-                  '99', // PONTUAÇÃO, OVERALL
+                  participant.overall?.toString() ??
+                      '0', // Exibindo a pontuação
                   style: principalFont.bold(color: const Color(0XffB0B0B0)),
                 ),
               ),

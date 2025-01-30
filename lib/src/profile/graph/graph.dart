@@ -2,38 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 
 class RadarGraph extends StatelessWidget {
-  const RadarGraph({super.key});
+  final List<List<double>> data; // Valores dos atributos
+  final List<String> features; // Nomes dos atributos
+
+  const RadarGraph({super.key, required this.data, required this.features});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    // Verificar se o tamanho de features e o de valores em data estão compatíveis
+    assert(features.length == data[0].length,
+        'A quantidade de features deve ser igual à quantidade de valores em data.');
+
+    // Debug opcional: Imprimir os pares atributo-valor no console
+    for (int i = 0; i < features.length; i++) {
+      debugPrint('${features[i]}: ${data[0][i]}');
+    }
+
+    return Center(
       child: SizedBox(
         height: 350,
         width: 500,
         child: RadarChart(
-          ticks: [20, 40, 60, 80, 100],
-          features: [
-            'Físico', //FÍS
-            'Ritmo', //RIT
-            'Finalização', //FIN
-            'Passe', //PAS
-            'Agilidade', //AGI
-            'Drible', //DRI
-          ],
-          data: [
-            [50, 70, 60, 80, 90, 60],
-          ],
-          graphColors: [Color(0xFFC0C0C0)],
+          ticks: const [60, 70, 80, 90, 100, 110],
+          features: features,
+          data: data,
+          graphColors: const [Color(0xFFC0C0C0)], // Cor do gráfico
           outlineColor: Colors.white,
           axisColor: Colors.white,
-          featuresTextStyle: TextStyle(
+          featuresTextStyle: const TextStyle(
             color: Colors.white,
             fontSize: 10,
             fontFamily: 'STRETCH',
             fontWeight: FontWeight.bold,
             height: 1,
           ),
-          sides: 6,
+          sides: features.length,
         ),
       ),
     );

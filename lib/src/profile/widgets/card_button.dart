@@ -49,7 +49,18 @@ class _CardButtonState extends State<CardButton> {
                         ? Stack(
                             alignment: Alignment.center,
                             children: [
-                              const PlayerCard(key: Key('playerCard')),
+                              const PlayerCard(
+                                key: Key('playerCard'),
+                                ritValue: '',
+                                pesoValue: '',
+                                alturaValue: '',
+                                finalValue: '',
+                                embaixaValue: '',
+                                passValue: '',
+                                driValue: '',
+                                userName: '',
+                                position: '',
+                              ),
                               Positioned(
                                 top: 20,
                                 right: 20,

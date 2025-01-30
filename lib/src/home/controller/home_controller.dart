@@ -27,14 +27,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _screens = [
       const AlternateHome(),
-      const RankPage(),
+      RankPage(),
       const MarketPage(),
-      const ProfilePage(
-        evaluationName: '',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-      )
     ];
   }
 
@@ -92,10 +86,6 @@ class _HomePageState extends State<HomePage> {
             NavigationDestination(
               icon: Icon(Icons.store),
               label: 'Loja',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.account_circle_outlined),
-              label: 'Perfil',
             ),
           ],
         ),

@@ -17,15 +17,14 @@ class ProfilePage extends StatefulWidget {
   final String result;
   final String finalScore;
 
-  final List<AvaliationView>
-      allEvaluations; // Adicionando a lista de avaliações
+  final List<AvaliationView> allEvaluations;
 
   const ProfilePage({
     super.key,
     required this.evaluationName,
     required this.result,
     required this.finalScore,
-    required this.allEvaluations, // Certificando que a lista é passada no construtor
+    required this.allEvaluations,
   });
 
   @override
@@ -41,12 +40,8 @@ class _ProfilePageState extends State<ProfilePage>
   String? position;
   String? name;
 
-  bool _isPlayerCardVisible = false;
-  bool _isRadarGraphVisible = false;
   bool _isDatacard = false;
   late final AnimationController _controller;
-  late final Animation<double> _opacityAnimation;
-  late final Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
@@ -62,16 +57,6 @@ class _ProfilePageState extends State<ProfilePage>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-
-    _opacityAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   // Função para carregar os dados do usuário
@@ -124,57 +109,331 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
-  void togglePlayerCard() {
-    debugPrint("Toggling Player Card...");
-    if (_isPlayerCardVisible) {
-      debugPrint("Escondendo Player Card");
-      _controller.reverse().then((_) {
-        setState(() {
-          _isPlayerCardVisible = false;
-        });
-      });
-    } else {
-      debugPrint("Exibindo Player Card");
-      setState(() {
-        _isPlayerCardVisible = true;
-      });
-      _controller.forward();
-    }
+  void toggleRadarGraph() {
+    // Recuperando as avaliações
+    final item61 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 61,
+      orElse: () => const AvaliationView(
+        itemId: 61,
+        evaluationName: 'Sprint',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item16 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 16,
+      orElse: () => const AvaliationView(
+        itemId: 16,
+        evaluationName: 'Peso',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item17 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 17,
+      orElse: () => const AvaliationView(
+        itemId: 17,
+        evaluationName: 'Altura',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item41 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 41,
+      orElse: () => const AvaliationView(
+        itemId: 41,
+        evaluationName: 'Embaixadinha',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item55 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 55,
+      orElse: () => const AvaliationView(
+        itemId: 55,
+        evaluationName: 'Finalização',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item54 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 54,
+      orElse: () => const AvaliationView(
+        itemId: 54,
+        evaluationName: 'Passe',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item59 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 59,
+      orElse: () => const AvaliationView(
+        itemId: 59,
+        evaluationName: 'Drible',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+
+    // Recuperando os valores das avaliações
+    final driValue = item59.result;
+    final passValue = item54.result;
+    final finalValue = item55.result;
+    final embaixaValue = item41.result;
+    final alturaValue = item17.result;
+    final ritValue = item61.result;
+
+    // Calculando os valores do gráfico
+    String calculatedAgi =
+        calculateFinalScore(61, double.tryParse(ritValue) ?? 0);
+    String calculatedFis =
+        calculateFinalScore(16, double.tryParse(alturaValue) ?? 0);
+    String calculatedRit =
+        calculateFinalScore(41, double.tryParse(embaixaValue) ?? 0);
+    String calculatedFin =
+        calculateFinalScore(55, double.tryParse(finalValue) ?? 0);
+    String calculatedPas =
+        calculateFinalScore(54, double.tryParse(passValue) ?? 0);
+    String calculatedDri =
+        calculateFinalScore(59, double.tryParse(driValue) ?? 0);
+
+    // Convertendo para valores inteiros e depois para double para o gráfico
+    double agi = double.tryParse(calculatedAgi) ?? 0;
+    double fis = double.tryParse(calculatedFis) ?? 0;
+    double rit = double.tryParse(calculatedRit) ?? 0;
+    double fin = double.tryParse(calculatedFin) ?? 0;
+    double pas = double.tryParse(calculatedPas) ?? 0;
+    double dri = double.tryParse(calculatedDri) ?? 0;
+
+    // Exibindo os valores no console para verificação
+    debugPrint('calculatedAgi: $calculatedAgi');
+    debugPrint('calculatedFis: $calculatedFis');
+    debugPrint('calculatedRit: $calculatedRit');
+    debugPrint('calculatedFin: $calculatedFin');
+    debugPrint('calculatedPas: $calculatedPas');
+    debugPrint('calculatedDri: $calculatedDri');
+
+    // Passando os valores para o gráfico
+    List<List<double>> data = [
+      [
+        fin, // Finalização
+        rit, // Ritmo
+        dri, // Drible
+        agi, // Agilidade
+        fis, // Físico
+        pas, // Passe
+      ],
+    ];
+
+    List<String> features = [
+      'Finalização',
+      'Ritmo',
+      'Drible',
+      'Agilidade',
+      'Físico',
+      'Passe',
+    ];
+
+    // Exibindo os dados para o gráfico no console
+    debugPrint('Data para gráfico: ${data[0]}');
+    debugPrint('Features para gráfico: $features');
+
+    // Exibindo o gráfico no diálogo
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Não permite fechar clicando fora
+      builder: (BuildContext context) {
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: RadarGraph(
+              data: data,
+              features: features,
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  void toggleRadarGraph() {
-    debugPrint("Toggling Radar Graph...");
-    if (_isRadarGraphVisible) {
-      debugPrint("Escondendo Radar Graph");
-      _controller.reverse().then((_) {
-        setState(() {
-          _isRadarGraphVisible = false;
-        });
-      });
-    } else {
-      debugPrint("Exibindo Radar Graph");
-      setState(() {
-        _isRadarGraphVisible = true;
-      });
-      _controller.forward();
-    }
+  void togglePlayerCard() {
+    final item61 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 61,
+      orElse: () => const AvaliationView(
+        itemId: 61,
+        evaluationName: 'Sprint',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item16 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 61,
+      orElse: () => const AvaliationView(
+        itemId: 16,
+        evaluationName: 'Peso',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item17 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 61,
+      orElse: () => const AvaliationView(
+        itemId: 61,
+        evaluationName: 'Altura',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item41 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 41,
+      orElse: () => const AvaliationView(
+        itemId: 41,
+        evaluationName: 'Embaixadinha',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item55 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 55,
+      orElse: () => const AvaliationView(
+        itemId: 55,
+        evaluationName: 'Finalização',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item54 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 54,
+      orElse: () => const AvaliationView(
+        itemId: 54,
+        evaluationName: 'Passe',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item59 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 59,
+      orElse: () => const AvaliationView(
+        itemId: 59,
+        evaluationName: 'Drible',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final driValue = item59.result;
+    final passValue = item54.result;
+    final finalValue = item55.result;
+    final embaixaValue = item41.result;
+    final pesoValue = item16.result;
+    final alturaValue = item17.result;
+    final ritValue = item61.result;
+
+    debugPrint("Toggling Player Card...");
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Não permite fechar clicando fora
+      builder: (BuildContext context) {
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: PlayerCard(
+              ritValue: ritValue,
+              pesoValue: pesoValue,
+              alturaValue: alturaValue,
+              embaixaValue: embaixaValue,
+              finalValue: finalValue,
+              passValue: passValue,
+              driValue: driValue,
+              userName: userName ?? '',
+              position: position ?? '',
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void toggleDadosUser() {
-    debugPrint("Toggling Radar Graph...");
-    if (_isDatacard) {
-      debugPrint("Escondendo Radar Graph");
-      _controller.reverse().then((_) {
-        setState(() {
-          _isDatacard = false;
-        });
-      });
-    } else {
-      debugPrint("Exibindo Radar Graph");
+    final item16 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 16,
+      orElse: () => const AvaliationView(
+        itemId: 17,
+        evaluationName: 'Peso',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item17 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 17,
+      orElse: () => const AvaliationView(
+        itemId: 16,
+        evaluationName: 'Altura',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+
+    final peso = item16.result;
+    final altura = item17.result;
+
+    if (!_isDatacard) {
       setState(() {
         _isDatacard = true;
       });
-      _controller.forward();
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: Material(
+              color: Colors.transparent,
+              child: DadosUser(
+                peso: peso,
+                altura: altura,
+                onClose: () {
+                  setState(() {
+                    _isDatacard = false;
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          );
+        },
+      );
     }
   }
 
@@ -185,91 +444,94 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
   }
 
-  // Função para calcular a nota final
   String calculateFinalScore(int? itemId, double score) {
-    if (itemId == 16) {
-      if (score <= 140) {
-        return (70 + (score / 140) * 10).toStringAsFixed(1); // De 70 a 80
-      } else if (score <= 160) {
-        return (80 + ((score - 140) / 20) * 5).toStringAsFixed(1); // De 80 a 85
-      } else if (score <= 180) {
-        return (85 + ((score - 160) / 20) * 15)
-            .toStringAsFixed(1); // De 85 a 100
-      }
-    } else if (itemId == 17) {
-      if (score <= 35) {
-        return '80'; // Para score <= 35
-      } else if (score <= 45) {
-        return '85'; // Para score entre 35 e 45
-      } else if (score <= 60) {
-        return '90'; // Para score entre 40 e 60
-      }
-    } else if (itemId == 59) {
-      final adjustedScore = score - 2;
-      if (adjustedScore < 15) {
-        return '100';
-      } else if (adjustedScore >= 16 && adjustedScore <= 17) {
-        return '90'; // Score ajustado entre 16 e 17
-      } else if (adjustedScore > 17 && adjustedScore <= 22) {
-        final proportionalScore =
-            90 - ((adjustedScore - 17) / (22 - 17) * 20); // De 90 a 70
-        return proportionalScore.toStringAsFixed(1);
-      } else if (adjustedScore > 23) {
-        return '70'; // Score ajustado > 23
-      }
-    } else if (itemId == 60) {
-      if (score < 15) {
-        return '100'; // Score < 15
-      } else if (score >= 16 && score <= 17) {
-        return '90'; // Score entre 16 e 17
-      } else if (score > 17 && score <= 22) {
-        final proportionalScore =
-            90 - ((score - 17) / (22 - 17) * 20); // De 90 a 70
-        return proportionalScore.toStringAsFixed(1);
-      } else if (score > 23) {
-        return '70'; // Score > 23
-      }
-    } else if (itemId == 61) {
-      if (score <= 1.8) {
-        return '100'; // Score <= 1.8
-      } else if (score > 1.8 && score <= 2.5) {
-        final proportionalScore =
-            100 - ((score - 1.8) / (2.5 - 1.8) * 20); // De 100 a 80
-        return proportionalScore.toStringAsFixed(1);
-      } else if (score > 2.5) {
-        final proportionalScore =
-            60 + ((score - 2.5) / (3.5 - 2.5) * 10); // De 60 a 70
-        return proportionalScore.clamp(60, 70).toStringAsFixed(1);
-      }
-    } else if (itemId == 62) {
-      if (score >= 120 && score <= 150) {
-        return '85'; // Score entre 120 e 150
-      } else if (score > 150 && score <= 170) {
-        return '90'; // Score entre 150 e 170
-      } else if (score > 170) {
-        // Proporcional de 90 a 100
-        final proportionalScore =
-            90 + ((score - 170) / (180 - 170) * 10); // De 90 a 100
-        return proportionalScore.clamp(90, 100).toStringAsFixed(1);
-      }
-    } else if (itemId == 41) {
-      if (score <= 60) {
-        return '60'; // Score <= 60
-      } else if (score > 60 && score <= 70) {
-        return '80'; // Score entre 60 e 70
-      } else if (score > 70 && score <= 80) {
-        return '90'; // Score entre 70 e 80
-      } else if (score > 100) {
-        // Proporcional acima de 100 até 100
-        final proportionalScore =
-            100 - ((score - 100) / (120 - 100) * 20); // De 100 a 100 (clamp)
-        return proportionalScore.clamp(100, 100).toStringAsFixed(1);
-      }
-    } else if (itemId == 54 || itemId == 55 || itemId == 56 || itemId == 35) {
-      // Lógica simples: cada 1 no score equivale a 10
-      return (score * 10).toStringAsFixed(1);
+    switch (itemId) {
+      case 16:
+        if (score <= 140) {
+          return (70 + (score / 140) * 10).toStringAsFixed(1);
+        } else if (score <= 160) {
+          return (80 + ((score - 140) / 20) * 5).toStringAsFixed(1);
+        } else if (score <= 180) {
+          return (85 + ((score - 160) / 20) * 15).toStringAsFixed(1);
+        }
+        break;
+      case 17:
+        if (score <= 35) {
+          return '80';
+        } else if (score <= 45) {
+          return '85';
+        } else if (score <= 60) {
+          return '90';
+        }
+        break;
+      case 59:
+        final adjustedScore = score - 2;
+        if (adjustedScore < 15) {
+          return '100';
+        } else if (adjustedScore >= 16 && adjustedScore <= 17) {
+          return '90';
+        } else if (adjustedScore > 17 && adjustedScore <= 22) {
+          final proportionalScore =
+              90 - ((adjustedScore - 17) / (22 - 17) * 20);
+          return proportionalScore.toStringAsFixed(1);
+        } else if (adjustedScore > 23) {
+          return '70';
+        }
+        break;
+      case 60:
+        if (score < 15) {
+          return '100';
+        } else if (score >= 16 && score <= 17) {
+          return '90';
+        } else if (score > 17 && score <= 22) {
+          final proportionalScore = 90 - ((score - 17) / (22 - 17) * 20);
+          return proportionalScore.toStringAsFixed(1);
+        } else if (score > 23) {
+          return '70';
+        }
+        break;
+      case 61:
+        if (score <= 1.8) {
+          return '100';
+        } else if (score > 1.8 && score <= 2.5) {
+          final proportionalScore = 100 - ((score - 1.8) / (2.5 - 1.8) * 20);
+          return proportionalScore.toStringAsFixed(1);
+        } else if (score > 2.5) {
+          final proportionalScore = 60 + ((score - 2.5) / (3.5 - 2.5) * 10);
+          return proportionalScore.clamp(60, 70).toStringAsFixed(1);
+        }
+        break;
+      case 62:
+        if (score >= 120 && score <= 150) {
+          return '85';
+        } else if (score > 150 && score <= 170) {
+          return '90';
+        } else if (score > 170) {
+          final proportionalScore = 90 + ((score - 170) / (180 - 170) * 10);
+          return proportionalScore.clamp(90, 100).toStringAsFixed(1);
+        }
+        break;
+      case 41:
+        if (score <= 60) {
+          return '60';
+        } else if (score > 60 && score <= 70) {
+          return '80';
+        } else if (score > 70 && score <= 80) {
+          return '90';
+        } else if (score > 100) {
+          final proportionalScore = 100 - ((score - 100) / (120 - 100) * 20);
+          return proportionalScore.clamp(100, 100).toStringAsFixed(1);
+        }
+        break;
+      case 54:
+      case 55:
+      case 56:
+      case 35:
+        return (score * 10).toStringAsFixed(1);
+      default:
+        return score.toStringAsFixed(1);
     }
-    return score.toStringAsFixed(1); // Retorna o score padrão para outros itens
+    return score.toStringAsFixed(1);
   }
 
   @override
@@ -280,6 +542,13 @@ class _ProfilePageState extends State<ProfilePage>
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: const Color(0xFF1E1E1E),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(
@@ -380,11 +649,10 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 const SizedBox(height: 25),
                 SizedBox(
-                  width: 50, // Largura fixa
-                  height: 50, // Altura fixa
+                  width: 10,
+                  height: 10,
                   child: Visibility(
-                    visible:
-                        false, // A lista ficará invisível, mas com espaço ocupado
+                    visible: false,
                     child: ListView.builder(
                       itemCount: widget.allEvaluations.length,
                       itemBuilder: (context, index) {
@@ -407,77 +675,6 @@ class _ProfilePageState extends State<ProfilePage>
               ],
             ),
           ),
-          if (_isPlayerCardVisible)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: togglePlayerCard,
-                child: Container(
-                  // ignore: deprecated_member_use
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
-                    child: FadeTransition(
-                      opacity: _opacityAnimation,
-                      child: SlideTransition(
-                        position: _slideAnimation,
-                        child: const PlayerCard(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          if (_isRadarGraphVisible)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: toggleRadarGraph,
-                child: Container(
-                  color: const Color(0xFF121212),
-                  child: Center(
-                    child: FadeTransition(
-                      opacity: _opacityAnimation,
-                      child: SlideTransition(
-                        position: _slideAnimation,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              color: const Color(0xFF121212),
-                              child: const RadarGraph(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          if (_isDatacard)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: toggleDadosUser,
-                child: Container(
-                  color: const Color(0xFF121212),
-                  child: Center(
-                    child: FadeTransition(
-                      opacity: _opacityAnimation,
-                      child: SlideTransition(
-                        position: _slideAnimation,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              color: const Color(0xFF121212),
-                              child: const DadosUser(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
         ],
       ),
     );

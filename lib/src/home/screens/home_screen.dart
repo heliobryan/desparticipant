@@ -3,7 +3,6 @@ import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/services/home_services.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
-import 'package:des/src/home/widgets/viewResults.dart';
 import 'package:des/src/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,7 +60,7 @@ class _AlternateHomeState extends State<AlternateHome> {
           log("[loadUser] Julgamentos retornados: $fetchedJudgments");
 
           setState(() {
-            judgments = fetchedJudgments ?? [];
+            judgments = fetchedJudgments;
             isLoading = false;
           });
         }
@@ -94,7 +93,7 @@ class _AlternateHomeState extends State<AlternateHome> {
           log("[loadUser] Julgamentos retornados: $fetchedJudgments");
 
           setState(() {
-            judgments = fetchedJudgments ?? [];
+            judgments = fetchedJudgments;
             isLoading = false;
           });
         }
@@ -173,50 +172,86 @@ class _AlternateHomeState extends State<AlternateHome> {
                                   finalScore:
                                       judgment['score']?.toString() ?? 'N/A',
                                   itemId: judgment['item']['id'],
-                                  allEvaluations: [], // Deixe vazio, pois vamos coletar esses dados no clique do botão
+                                  allEvaluations: const [],
+                                  evaId:
+                                      '', // Deixe vazio, pois vamos coletar esses dados no clique do botão
                                 ),
                                 const SizedBox(height: 30),
                               ],
                             );
-                          }).toList(),
+                          }),
 
-                          // Botão para enviar todas as informações para a ProfilePage
-                          ElevatedButton(
-                            onPressed: () {
-                              // Criando uma lista de objetos AvaliationView
-                              List<AvaliationView> allEvaluations =
-                                  judgments!.map((judgment) {
-                                return AvaliationView(
-                                  evaluationName:
-                                      judgment['item']['name'] ?? 'N/A',
-                                  result:
-                                      judgment['score']?.toString() ?? 'N/A',
-                                  finalScore:
-                                      judgment['score']?.toString() ?? 'N/A',
-                                  itemId: judgment['item']
-                                      ['id'], // Passando o itemId
-                                  allEvaluations: [], // Passar vazio aqui por enquanto
-                                );
-                              }).toList();
-
-                              // Passando a lista de objetos AvaliationView para a ProfilePage
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProfilePage(
-                                    allEvaluations: allEvaluations,
+                          SizedBox(
+                            width: 330,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  backgroundColor: Colors.transparent,
+                                  side: const BorderSide(color: Colors.white)),
+                              onPressed: () {
+                                List<AvaliationView> allEvaluations =
+                                    judgments!.map((judgment) {
+                                  return AvaliationView(
                                     evaluationName:
-                                        '', // Passe o nome da avaliação
+                                        judgment['item']['name'] ?? 'N/A',
                                     result:
-                                        '', // Passe o resultado da avaliação
+                                        judgment['score']?.toString() ?? 'N/A',
                                     finalScore:
-                                        '', // Passe a pontuação final da avaliação
+                                        judgment['score']?.toString() ?? 'N/A',
+                                    itemId: judgment['item']['id'],
+                                    allEvaluations: const [],
+                                    evaId: '',
+                                  );
+                                }).toList();
+
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        ProfilePage(
+                                      allEvaluations: allEvaluations,
+                                      evaluationName: '',
+                                      result: '',
+                                      finalScore: '',
+                                    ),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      var fadeAnimation =
+                                          Tween(begin: 0.0, end: 1.0)
+                                              .animate(CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.easeInOut,
+                                      ));
+
+                                      var slideAnimation = Tween(
+                                              begin: const Offset(0.0, 0.05),
+                                              end: Offset.zero)
+                                          .animate(CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.easeInOut,
+                                      ));
+
+                                      return FadeTransition(
+                                        opacity: fadeAnimation,
+                                        child: SlideTransition(
+                                          position: slideAnimation,
+                                          child: child,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                ),
-                              );
-                            },
-                            child: Text('Ver todas as avaliações'),
-                          )
+                                );
+                              },
+                              child: Text(
+                                'VER PERFIL E RESULTADOS',
+                                style:
+                                    principalFont.medium(color: Colors.white),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
