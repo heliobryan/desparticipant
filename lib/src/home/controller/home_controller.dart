@@ -1,9 +1,7 @@
 // ignore_for_file: prefer_final_fields
-
 import 'package:des/src/home/screens/home_screen.dart';
 import 'package:des/src/rank/screens/rank_page.dart';
 import 'package:des/src/marketplace/screens/market_page.dart';
-import 'package:des/src/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _screens = [
       const AlternateHome(),
-      RankPage(),
+      const RankPage(),
       const MarketPage(),
     ];
   }

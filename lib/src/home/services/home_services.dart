@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -149,5 +150,59 @@ class HomeServices {
     }
 
     return [];
+  }
+
+  Future<List<dynamic>?> fetchParticipants() async {
+    final token = await loadToken();
+
+    if (token.isEmpty) {
+      debugPrint('[fetchParticipants] Token vazio ou inválido.');
+      return null;
+    }
+
+    try {
+      const apiUrl =
+          'https://api.des.versatecnologia.com.br/api/participants?page=1&perPage=100&groupBySub=1';
+      var url = Uri.parse(apiUrl);
+
+      debugPrint('[fetchParticipants] Fazendo requisição para: $apiUrl');
+      var response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      debugPrint('[fetchParticipants] Response status: ${response.statusCode}');
+      debugPrint('[fetchParticipants] Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decodedData = jsonDecode(response.body);
+        debugPrint('[fetchParticipants] Dados decodificados: $decodedData');
+
+        List<dynamic> participants = [];
+        decodedData.forEach((key, value) {
+          if (value is List) {
+            participants.addAll(value);
+          }
+        });
+
+        // Verificando as categorias de todos os participantes
+        for (var participant in participants) {
+          var category = participant['category'] ?? 'Categoria não disponível';
+          debugPrint(
+              '[fetchParticipants] Categoria do participante: $category');
+        }
+
+        return participants;
+      } else {
+        debugPrint(
+            '[fetchParticipants] Erro na requisição: ${response.statusCode}');
+      }
+    } catch (error) {
+      debugPrint('[fetchParticipants] Erro ao buscar participantes: $error');
+    }
+
+    return null;
   }
 }

@@ -1,7 +1,10 @@
 import 'package:des/src/GlobalConstants/images.dart';
+import 'package:des/src/home/controller/home_controller.dart';
+import 'package:des/src/home/screens/home_screen.dart';
 import 'package:des/src/login/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,6 +22,12 @@ class _SplashScreenState extends State<SplashScreen> {
     _startAnimation();
   }
 
+  Future<String> loadToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final token = sharedPreferences.getString('token');
+    return token ?? '';
+  }
+
   void _startAnimation() async {
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
@@ -26,7 +35,44 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     await Future.delayed(const Duration(seconds: 3));
-    _navigateToLogin();
+    _checkToken();
+  }
+
+  void _checkToken() async {
+    final token = await loadToken();
+
+    if (token.isNotEmpty) {
+      // Token válido, redireciona para AlternateHome
+      _navigateToAlternateHome();
+    } else {
+      // Token inválido ou não existe, redireciona para LoginScreen
+      _navigateToLogin();
+    }
+  }
+
+  void _navigateToAlternateHome() {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 800),
+        pageBuilder: (_, animation, secondaryAnimation) =>
+            const HomePage(), // Troque pela tela de AlternateHome
+        transitionsBuilder: (_, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
   }
 
   void _navigateToLogin() {

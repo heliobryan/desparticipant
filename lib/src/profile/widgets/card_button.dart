@@ -6,11 +6,13 @@ class CardButton extends StatefulWidget {
   const CardButton({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CardButtonState createState() => _CardButtonState();
 }
 
 class _CardButtonState extends State<CardButton> {
   bool _isCardVisible = false;
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -41,6 +43,7 @@ class _CardButtonState extends State<CardButton> {
                 });
               },
               child: Material(
+                // ignore: deprecated_member_use
                 color: Colors.black.withOpacity(0.7),
                 child: Center(
                   child: AnimatedSwitcher(
@@ -60,6 +63,7 @@ class _CardButtonState extends State<CardButton> {
                                 driValue: '',
                                 userName: '',
                                 position: '',
+                                userImagePath: '',
                               ),
                               Positioned(
                                 top: 20,

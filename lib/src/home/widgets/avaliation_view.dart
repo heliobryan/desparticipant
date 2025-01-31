@@ -83,8 +83,9 @@ class AvaliationView extends StatelessWidget {
           return '90';
         } else if (score > 170) {
           final proportionalScore = 90 + ((score - 170) / (180 - 170) * 10);
-          return proportionalScore.clamp(90, 100).toStringAsFixed(1);
+          return proportionalScore.clamp(90, 100).toDouble().toStringAsFixed(1);
         }
+
         break;
       case 41:
         if (score <= 60) {

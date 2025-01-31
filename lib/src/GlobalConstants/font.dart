@@ -23,8 +23,10 @@ class principalFont {
     );
   }
 
-  static TextStyle medium(
-      {double fontSize = 14.0, Color color = Colors.black}) {
+  static TextStyle medium({
+    double fontSize = 14.0,
+    Color color = Colors.black,
+  }) {
     return TextStyle(
       fontFamily: primaryFont,
       fontSize: fontSize,

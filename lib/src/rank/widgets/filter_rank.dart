@@ -2,13 +2,17 @@ import 'package:des/src/GlobalConstants/font.dart';
 import 'package:flutter/material.dart';
 
 class FilterRank extends StatefulWidget {
-  const FilterRank({super.key});
+  final Function(String) onCategorySelected;
+
+  const FilterRank({super.key, required this.onCategorySelected});
 
   @override
   State<FilterRank> createState() => _FilterRankState();
 }
 
 class _FilterRankState extends State<FilterRank> {
+  String selectedCategory = 'SUB 10'; // Categoria inicial
+
   void _showFilterRankModal(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: const Color(0xFF2C2C2C),
@@ -26,10 +30,9 @@ class _FilterRankState extends State<FilterRank> {
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(
-                  itemCount: 11, // SUB 7 ao SUB 17 (11 categorias)
+                  itemCount: 11,
                   itemBuilder: (context, index) {
-                    final subValue =
-                        7 + index; // Gera os valores SUB 7 a SUB 17
+                    final subValue = 7 + index;
                     return ListTile(
                       title: Text(
                         "SUB $subValue",
@@ -37,8 +40,15 @@ class _FilterRankState extends State<FilterRank> {
                             color: const Color(0XffB0B0B0), fontSize: 20),
                       ),
                       onTap: () {
-                        // Lógica ao selecionar a categoria
-                        Navigator.pop(context, "SUB $subValue");
+                        setState(() {
+                          selectedCategory =
+                              "SUB $subValue"; // Atualiza a categoria selecionada
+                        });
+                        debugPrint(
+                            '[FilterRank] Categoria selecionada: SUB $subValue');
+                        widget.onCategorySelected(
+                            "SUB $subValue"); // Passa para o filtro em RankPage
+                        Navigator.pop(context); // Fecha o modal
                       },
                     );
                   },
@@ -65,9 +75,9 @@ class _FilterRankState extends State<FilterRank> {
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.transparent),
         ),
-        child: const Text(
-          'SUB 10',
-          style: TextStyle(
+        child: Text(
+          selectedCategory,
+          style: const TextStyle(
               color: Color(0XffB0B0B0),
               fontSize: 15,
               fontWeight: FontWeight.bold),

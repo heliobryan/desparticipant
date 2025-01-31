@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
-
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
@@ -10,6 +14,8 @@ import 'package:des/src/profile/services/profile_service.dart';
 import 'package:des/src/profile/widgets/data_card.dart';
 import 'package:des/src/profile/widgets/graphic_button.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -42,6 +48,50 @@ class _ProfilePageState extends State<ProfilePage>
 
   bool _isDatacard = false;
   late final AnimationController _controller;
+  final ImagePicker _picker = ImagePicker(); // Instancia o ImagePicker
+  XFile? _image; // Variável para armazenar a imagem escolhida ou capturad
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.camera, // Pode alternar para ImageSource.gallery
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = pickedFile; // Armazena a imagem escolhida ou capturada
+        _saveImageToSharedPreferences(
+            _image!.path); // Salva o caminho da imagem
+      }
+    });
+  }
+
+  Future<void> _saveImageToSharedPreferences(String imagePath) async {
+    try {
+      // Obtém a instância de SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // Salva o caminho da imagem no SharedPreferences
+      await prefs.setString('userImagePath', imagePath);
+
+      log("Caminho da imagem salvo em SharedPreferences: $imagePath");
+    } catch (e) {
+      log("Erro ao salvar o caminho da imagem no SharedPreferences: $e");
+    }
+  }
+
+  Future<void> loadImageFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedImagePath = prefs.getString('userImagePath');
+
+    if (savedImagePath != null) {
+      // Caso haja um caminho salvo, podemos usar para carregar a imagem
+      setState(() {
+        _image = XFile(savedImagePath); // Usando o caminho da imagem salva
+      });
+    } else {
+      log("Nenhuma imagem salva encontrada.");
+    }
+  }
 
   @override
   void initState() {
@@ -52,6 +102,7 @@ class _ProfilePageState extends State<ProfilePage>
     super.initState();
     log("Inicializando ProfilePage...");
     loadUserData();
+    loadImageFromSharedPreferences(); // Carrega a imagem salva do SharedPreferences
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -110,7 +161,152 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   void toggleRadarGraph() {
-    // Recuperando as avaliações
+    final item61 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 61,
+      orElse: () => const AvaliationView(
+        itemId: 61,
+        evaluationName: 'Sprint',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item17 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 17,
+      orElse: () => const AvaliationView(
+        itemId: 17,
+        evaluationName: 'Altura',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item41 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 41,
+      orElse: () => const AvaliationView(
+        itemId: 41,
+        evaluationName: 'Embaixadinha',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item55 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 55,
+      orElse: () => const AvaliationView(
+        itemId: 55,
+        evaluationName: 'Finalização',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item54 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 54,
+      orElse: () => const AvaliationView(
+        itemId: 54,
+        evaluationName: 'Passe',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+    final item59 = widget.allEvaluations.firstWhere(
+      (evaluation) => evaluation.itemId == 59,
+      orElse: () => const AvaliationView(
+        itemId: 59,
+        evaluationName: 'Drible',
+        result: '',
+        finalScore: '',
+        allEvaluations: [],
+        evaId: '',
+      ),
+    );
+
+    final driValue = item59.result;
+    final passValue = item54.result;
+    final finalValue = item55.result;
+    final embaixaValue = item41.result;
+    final alturaValue = item17.result;
+    final ritValue = item61.result;
+
+    String calculatedAgi =
+        calculateFinalScore(61, double.tryParse(ritValue) ?? 0);
+    String calculatedFis =
+        calculateFinalScore(16, double.tryParse(alturaValue) ?? 0);
+    String calculatedRit =
+        calculateFinalScore(41, double.tryParse(embaixaValue) ?? 0);
+    String calculatedFin =
+        calculateFinalScore(55, double.tryParse(finalValue) ?? 0);
+    String calculatedPas =
+        calculateFinalScore(54, double.tryParse(passValue) ?? 0);
+    String calculatedDri =
+        calculateFinalScore(59, double.tryParse(driValue) ?? 0);
+
+    double agi = double.tryParse(calculatedAgi) ?? 0;
+    double fis = double.tryParse(calculatedFis) ?? 0;
+    double rit = double.tryParse(calculatedRit) ?? 0;
+    double fin = double.tryParse(calculatedFin) ?? 0;
+    double pas = double.tryParse(calculatedPas) ?? 0;
+    double dri = double.tryParse(calculatedDri) ?? 0;
+
+    debugPrint('calculatedAgi: $calculatedAgi');
+    debugPrint('calculatedFis: $calculatedFis');
+    debugPrint('calculatedRit: $calculatedRit');
+    debugPrint('calculatedFin: $calculatedFin');
+    debugPrint('calculatedPas: $calculatedPas');
+    debugPrint('calculatedDri: $calculatedDri');
+
+    List<List<double>> data = [
+      [
+        fin, // Finalização
+        rit, // Ritmo
+        dri, // Drible
+        agi, // Agilidade
+        fis, // Físico
+        pas, // Passe
+      ],
+    ];
+
+    List<String> features = [
+      'Finalização',
+      'Ritmo',
+      'Drible',
+      'Agilidade',
+      'Físico',
+      'Passe',
+    ];
+
+    debugPrint('Data para gráfico: ${data[0]}');
+    debugPrint('Features para gráfico: $features');
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: RadarGraph(
+              data: data,
+              features: features,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void togglePlayerCard() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userImagePath =
+        prefs.getString('user_image_path'); // ou getString('user_image_base64')
+
     final item61 = widget.allEvaluations.firstWhere(
       (evaluation) => evaluation.itemId == 61,
       orElse: () => const AvaliationView(
@@ -189,165 +385,6 @@ class _ProfilePageState extends State<ProfilePage>
       ),
     );
 
-    // Recuperando os valores das avaliações
-    final driValue = item59.result;
-    final passValue = item54.result;
-    final finalValue = item55.result;
-    final embaixaValue = item41.result;
-    final alturaValue = item17.result;
-    final ritValue = item61.result;
-
-    // Calculando os valores do gráfico
-    String calculatedAgi =
-        calculateFinalScore(61, double.tryParse(ritValue) ?? 0);
-    String calculatedFis =
-        calculateFinalScore(16, double.tryParse(alturaValue) ?? 0);
-    String calculatedRit =
-        calculateFinalScore(41, double.tryParse(embaixaValue) ?? 0);
-    String calculatedFin =
-        calculateFinalScore(55, double.tryParse(finalValue) ?? 0);
-    String calculatedPas =
-        calculateFinalScore(54, double.tryParse(passValue) ?? 0);
-    String calculatedDri =
-        calculateFinalScore(59, double.tryParse(driValue) ?? 0);
-
-    // Convertendo para valores inteiros e depois para double para o gráfico
-    double agi = double.tryParse(calculatedAgi) ?? 0;
-    double fis = double.tryParse(calculatedFis) ?? 0;
-    double rit = double.tryParse(calculatedRit) ?? 0;
-    double fin = double.tryParse(calculatedFin) ?? 0;
-    double pas = double.tryParse(calculatedPas) ?? 0;
-    double dri = double.tryParse(calculatedDri) ?? 0;
-
-    // Exibindo os valores no console para verificação
-    debugPrint('calculatedAgi: $calculatedAgi');
-    debugPrint('calculatedFis: $calculatedFis');
-    debugPrint('calculatedRit: $calculatedRit');
-    debugPrint('calculatedFin: $calculatedFin');
-    debugPrint('calculatedPas: $calculatedPas');
-    debugPrint('calculatedDri: $calculatedDri');
-
-    // Passando os valores para o gráfico
-    List<List<double>> data = [
-      [
-        fin, // Finalização
-        rit, // Ritmo
-        dri, // Drible
-        agi, // Agilidade
-        fis, // Físico
-        pas, // Passe
-      ],
-    ];
-
-    List<String> features = [
-      'Finalização',
-      'Ritmo',
-      'Drible',
-      'Agilidade',
-      'Físico',
-      'Passe',
-    ];
-
-    // Exibindo os dados para o gráfico no console
-    debugPrint('Data para gráfico: ${data[0]}');
-    debugPrint('Features para gráfico: $features');
-
-    // Exibindo o gráfico no diálogo
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Não permite fechar clicando fora
-      builder: (BuildContext context) {
-        return Center(
-          child: Material(
-            color: Colors.transparent,
-            child: RadarGraph(
-              data: data,
-              features: features,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void togglePlayerCard() {
-    final item61 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 61,
-      orElse: () => const AvaliationView(
-        itemId: 61,
-        evaluationName: 'Sprint',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item16 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 61,
-      orElse: () => const AvaliationView(
-        itemId: 16,
-        evaluationName: 'Peso',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item17 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 61,
-      orElse: () => const AvaliationView(
-        itemId: 61,
-        evaluationName: 'Altura',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item41 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 41,
-      orElse: () => const AvaliationView(
-        itemId: 41,
-        evaluationName: 'Embaixadinha',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item55 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 55,
-      orElse: () => const AvaliationView(
-        itemId: 55,
-        evaluationName: 'Finalização',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item54 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 54,
-      orElse: () => const AvaliationView(
-        itemId: 54,
-        evaluationName: 'Passe',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item59 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 59,
-      orElse: () => const AvaliationView(
-        itemId: 59,
-        evaluationName: 'Drible',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
     final driValue = item59.result;
     final passValue = item54.result;
     final finalValue = item55.result;
@@ -357,9 +394,10 @@ class _ProfilePageState extends State<ProfilePage>
     final ritValue = item61.result;
 
     debugPrint("Toggling Player Card...");
+
     showDialog(
       context: context,
-      barrierDismissible: true, // Não permite fechar clicando fora
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return Center(
           child: Material(
@@ -374,6 +412,7 @@ class _ProfilePageState extends State<ProfilePage>
               driValue: driValue,
               userName: userName ?? '',
               position: position ?? '',
+              userImagePath: userImagePath ?? '', // Passando a foto
             ),
           ),
         );
@@ -578,8 +617,8 @@ class _ProfilePageState extends State<ProfilePage>
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: 130,
-                      height: 130,
+                      width: 140,
+                      height: 140,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
@@ -588,11 +627,24 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                       ),
                     ),
-                    const Icon(
-                      Icons.account_circle_outlined,
-                      size: 130,
-                      color: Colors.white,
-                    ),
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: CircleAvatar(
+                        radius: 65,
+                        backgroundImage: _image == null
+                            ? null
+                            : FileImage(File(_image!.path)),
+                        backgroundColor: Colors.transparent,
+                        child: _image == null
+                            ? const Icon(
+                                Icons.account_circle_outlined, // Ícone da conta
+                                size:
+                                    120, // Ajuste o tamanho conforme necessário
+                                color: Colors.grey, // Cor do ícone
+                              )
+                            : null, // Se tiver imagem, não exibe o ícone
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 20),

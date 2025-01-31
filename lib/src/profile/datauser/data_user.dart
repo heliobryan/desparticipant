@@ -26,7 +26,7 @@ class DadosUser extends StatelessWidget {
       width: 300,
       height: 300,
       decoration: BoxDecoration(
-        color: Color(0xFF1E1E1E),
+        color: const Color(0xFF1E1E1E),
         border: Border.all(
           color: Colors.white,
         ),

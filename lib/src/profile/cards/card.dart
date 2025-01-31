@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayerCard extends StatefulWidget {
   final String ritValue;
@@ -11,6 +17,8 @@ class PlayerCard extends StatefulWidget {
   final String driValue;
   final String userName;
   final String position;
+  final String userImagePath; // Adicionando a foto
+
   const PlayerCard({
     super.key,
     required this.ritValue,
@@ -22,6 +30,7 @@ class PlayerCard extends StatefulWidget {
     required this.driValue,
     required this.userName,
     required this.position,
+    required this.userImagePath,
   });
 
   @override
@@ -29,6 +38,79 @@ class PlayerCard extends StatefulWidget {
 }
 
 class _PlayerCardstate extends State<PlayerCard> {
+  // ignore: unused_field
+  File? _imageFile;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImageFromPreferences();
+    loadImageFromSharedPreferences(); // Carrega a imagem salva do SharedPreferences
+  }
+
+  Future<String> loadImageFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final base64Image = prefs.getString('user_image_base64') ?? '';
+    return base64Image;
+  }
+
+  final ImagePicker _picker = ImagePicker(); // Instancia o ImagePicker
+  XFile? _image; // Variável para armazenar a imagem escolhida ou capturad
+
+  // Função para carregar a imagem do SharedPreferences
+  void _loadImageFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final imagePath =
+        prefs.getString('user_image_path'); // Aqui você pega o caminho
+    if (imagePath != null) {
+      setState(() {
+        _imageFile = File(imagePath); // Atualiza a imagem
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.camera, // Pode alternar para ImageSource.gallery
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = pickedFile; // Armazena a imagem escolhida ou capturada
+        _saveImageToSharedPreferences(
+            _image!.path); // Salva o caminho da imagem
+      }
+    });
+  }
+
+  Future<void> _saveImageToSharedPreferences(String imagePath) async {
+    try {
+      // Obtém a instância de SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // Salva o caminho da imagem no SharedPreferences
+      await prefs.setString('userImagePath', imagePath);
+
+      log("Caminho da imagem salvo em SharedPreferences: $imagePath");
+    } catch (e) {
+      log("Erro ao salvar o caminho da imagem no SharedPreferences: $e");
+    }
+  }
+
+  Future<void> loadImageFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedImagePath = prefs.getString('userImagePath');
+
+    if (savedImagePath != null) {
+      // Caso haja um caminho salvo, podemos usar para carregar a imagem
+      setState(() {
+        _image = XFile(savedImagePath); // Usando o caminho da imagem salva
+      });
+    } else {
+      log("Nenhuma imagem salva encontrada.");
+    }
+  }
+
   String calculateFinalScore(int itemId, int score) {
     switch (itemId) {
       case 16:
@@ -143,6 +225,20 @@ class _PlayerCardstate extends State<PlayerCard> {
 
     int average = ((agi + fis + rit + fin + pas + dri) / 6).toInt();
 
+    List<Color> gradientColors;
+    if (average > 90) {
+      gradientColors = [Color(0xFFFFD700), Color(0xFF1E1E1E)]; // Dourado
+    } else if (average >= 80 && average <= 89) {
+      gradientColors = [Color(0xFFC0C0C0), Color(0xFF1E1E1E)]; // Prata
+    } else if (average >= 70 && average <= 79) {
+      gradientColors = [Color(0xFF800080), Color(0xFF1E1E1E)]; // Roxo
+    } else {
+      gradientColors = [
+        Color(0xFF1E1E1E),
+        Color(0xFF1E1E1E)
+      ]; // Preto (default)
+    }
+
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -197,8 +293,8 @@ class _PlayerCardstate extends State<PlayerCard> {
                       alignment: Alignment.center,
                       children: [
                         Container(
-                          width: 180,
-                          height: 180,
+                          width: 170,
+                          height: 170,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
@@ -206,12 +302,26 @@ class _PlayerCardstate extends State<PlayerCard> {
                               width: 4,
                             ),
                           ),
-                        ),
-                        const Icon(
-                          Icons
-                              .account_circle_outlined, // FUTURAMENTE FOTO DO PARTICIPANTE
-                          size: 190,
-                          color: Colors.white,
+                          child: GestureDetector(
+                            onTap: _pickImage,
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundImage: _image == null
+                                  ? null
+                                  : FileImage(File(_image!.path)),
+                              backgroundColor: Colors.transparent,
+                              child: _image == null
+                                  ? const Center(
+                                      // Adicionado Center aqui para centralizar o ícone
+                                      child: Icon(
+                                        Icons.account_circle_outlined,
+                                        size: 160,
+                                        color: Colors.grey,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -324,13 +434,13 @@ class _PlayerCardstate extends State<PlayerCard> {
                   ],
                 ),
                 const SizedBox(height: 40),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'VER RANKING',
-                    style: principalFont.medium(color: Colors.white),
-                  ),
-                ),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.share,
+                      size: 30,
+                      color: Colors.white,
+                    ))
               ],
             ),
           ),

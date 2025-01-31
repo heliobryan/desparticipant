@@ -21,6 +21,7 @@ class _MarketPageState extends State<MarketPage> {
         throw 'Não foi possível abrir a URL';
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Erro ao tentar abrir a URL: $e");
     }
   }

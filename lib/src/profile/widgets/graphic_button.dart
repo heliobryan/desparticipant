@@ -2,7 +2,7 @@ import 'package:des/src/GlobalConstants/font.dart';
 import 'package:flutter/material.dart';
 
 class GrapichButton extends StatelessWidget {
-  final VoidCallback onPressed; // Adicionamos um parâmetro para a função
+  final VoidCallback onPressed;
 
   const GrapichButton({super.key, required this.onPressed});
 
@@ -14,7 +14,7 @@ class GrapichButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      onPressed: onPressed, // Chamamos a função passada
+      onPressed: onPressed,
       child: Text(
         'GRÁFICO',
         style: principalFont.medium(color: Colors.white, fontSize: 15),
