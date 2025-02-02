@@ -483,7 +483,11 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
   }
 
-  String calculateFinalScore(int? itemId, double score) {
+  String calculateFinalScore(int? itemId, double? score) {
+    if (score == null || score == 0) {
+      return '0.0';
+    }
+
     switch (itemId) {
       case 16:
         if (score <= 140) {
@@ -570,7 +574,8 @@ class _ProfilePageState extends State<ProfilePage>
       default:
         return score.toStringAsFixed(1);
     }
-    return score.toStringAsFixed(1);
+
+    return '0.0'; // Garantia de retorno 0.0 caso nenhum case seja satisfeito
   }
 
   @override

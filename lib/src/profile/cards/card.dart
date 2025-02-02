@@ -111,7 +111,11 @@ class _PlayerCardstate extends State<PlayerCard> {
     }
   }
 
-  String calculateFinalScore(int itemId, int score) {
+  String calculateFinalScore(int itemId, int? score) {
+    if (score == null || score == 0) {
+      return '0';
+    }
+
     switch (itemId) {
       case 16:
         if (score <= 140) {
@@ -198,7 +202,8 @@ class _PlayerCardstate extends State<PlayerCard> {
       default:
         return score.toInt().toString();
     }
-    return score.toInt().toString();
+
+    return '0'; // Garantia de retorno 0 caso nenhum case seja satisfeito
   }
 
   @override
