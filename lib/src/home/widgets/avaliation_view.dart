@@ -23,11 +23,15 @@ class AvaliationView extends StatelessWidget {
     switch (itemId) {
       case 16:
         if (score <= 140) {
-          return (70 + (score / 140) * 10).toStringAsFixed(1);
+          return (70 + (score / 140) * 10).clamp(0, 100).toStringAsFixed(1);
         } else if (score <= 160) {
-          return (80 + ((score - 140) / 20) * 5).toStringAsFixed(1);
+          return (80 + ((score - 140) / 20) * 5)
+              .clamp(0, 100)
+              .toStringAsFixed(1);
         } else if (score <= 180) {
-          return (85 + ((score - 160) / 20) * 15).toStringAsFixed(1);
+          return (85 + ((score - 160) / 20) * 15)
+              .clamp(0, 100)
+              .toStringAsFixed(1);
         }
         break;
       case 17:
@@ -47,11 +51,11 @@ class AvaliationView extends StatelessWidget {
         } else if (adjustedScore > 17.0 && adjustedScore <= 19.0) {
           final double proportionalScore =
               90 + ((adjustedScore - 17.0) / (19.0 - 17.0) * 9);
-          return proportionalScore.toStringAsFixed(1);
+          return proportionalScore.clamp(0, 100).toStringAsFixed(1);
         } else if (adjustedScore >= 20.0 && adjustedScore <= 22.0) {
           final double proportionalScore =
               80 + ((adjustedScore - 20.0) / (22.0 - 20.0) * 9);
-          return proportionalScore.toStringAsFixed(1);
+          return proportionalScore.clamp(0, 100).toStringAsFixed(1);
         } else if (adjustedScore > 23.0) {
           return '70';
         }
@@ -62,7 +66,7 @@ class AvaliationView extends StatelessWidget {
           return '100';
         } else if (score > 17.0 && score <= 22.0) {
           final proportionalScore = 90 - ((score - 17.0) / (22.0 - 17.0) * 20);
-          return proportionalScore.toStringAsFixed(1);
+          return proportionalScore.clamp(0, 100).toStringAsFixed(1);
         } else if (score > 22.0) {
           return '70';
         }
@@ -72,7 +76,7 @@ class AvaliationView extends StatelessWidget {
           return '100';
         } else if (score > 1.8 && score <= 2.5) {
           final proportionalScore = 100 - ((score - 1.8) / (2.5 - 1.8) * 20);
-          return proportionalScore.toStringAsFixed(1);
+          return proportionalScore.clamp(0, 100).toStringAsFixed(1);
         } else if (score > 2.5) {
           final proportionalScore = 60 + ((score - 2.5) / (3.5 - 2.5) * 10);
           return proportionalScore.clamp(60, 70).toStringAsFixed(1);
@@ -85,9 +89,8 @@ class AvaliationView extends StatelessWidget {
           return '90';
         } else if (score > 170) {
           final proportionalScore = 90 + ((score - 170) / (180 - 170) * 10);
-          return proportionalScore.clamp(90, 100).toDouble().toStringAsFixed(1);
+          return proportionalScore.clamp(0, 100).toDouble().toStringAsFixed(1);
         }
-
         break;
       case 41:
         if (score <= 60) {
@@ -98,18 +101,18 @@ class AvaliationView extends StatelessWidget {
           return '90';
         } else if (score > 100) {
           final proportionalScore = 100 - ((score - 100) / (120 - 100) * 20);
-          return proportionalScore.clamp(100, 100).toStringAsFixed(1);
+          return proportionalScore.clamp(0, 100).toStringAsFixed(1);
         }
         break;
       case 54:
       case 55:
       case 56:
       case 35:
-        return (score * 10).toStringAsFixed(1);
+        return (score * 10).clamp(0, 100).toStringAsFixed(1);
       default:
-        return score.toStringAsFixed(1);
+        return score.clamp(0, 100).toStringAsFixed(1);
     }
-    return score.toStringAsFixed(1);
+    return score.clamp(0, 100).toStringAsFixed(1);
   }
 
   @override

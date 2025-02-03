@@ -702,25 +702,29 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 const SizedBox(height: 10),
                 const SizedBox(height: 20),
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GrapichButton(onPressed: toggleRadarGraph),
-                    const SizedBox(width: 10),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 300,
+                      height: 100,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: togglePlayerCard,
+                        child: Text(
+                          'CARD',
+                          style: principalFont.medium(
+                              color: Colors.white, fontSize: 45),
                         ),
                       ),
-                      onPressed: togglePlayerCard,
-                      child: Text(
-                        'CARD',
-                        style: principalFont.medium(
-                            color: Colors.white, fontSize: 15),
-                      ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 20),
                     DataCard(onPressed: toggleDadosUser),
                   ],
                 ),

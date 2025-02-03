@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -134,17 +135,17 @@ class _PlayerCardstate extends State<PlayerCard> {
       case 59:
         final double adjustedScore = score - 2.0;
 
-        if (adjustedScore <= 17.0) {
+        if (adjustedScore <= 17) {
           return '100';
-        } else if (adjustedScore > 17.0 && adjustedScore <= 19.0) {
-          final double proportionalScore =
-              90 + ((adjustedScore - 17.0) / (19.0 - 17.0) * 9);
-          return proportionalScore.toStringAsFixed(1);
-        } else if (adjustedScore >= 20.0 && adjustedScore <= 22.0) {
-          final double proportionalScore =
-              80 + ((adjustedScore - 20.0) / (22.0 - 20.0) * 9);
-          return proportionalScore.toStringAsFixed(1);
-        } else if (adjustedScore > 23.0) {
+        } else if (adjustedScore > 17 && adjustedScore <= 19) {
+          final int proportionalScore =
+              (90 + ((adjustedScore - 17) / (19 - 17) * 9)).toInt();
+          return proportionalScore.toString();
+        } else if (adjustedScore >= 20 && adjustedScore <= 22) {
+          final int proportionalScore =
+              (80 + ((adjustedScore - 20) / (22 - 20) * 9)).toInt();
+          return proportionalScore.toString();
+        } else if (adjustedScore > 23) {
           return '70';
         }
 
@@ -359,12 +360,10 @@ class _PlayerCardstate extends State<PlayerCard> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const Icon(
-                          //ESCUDO TIME
-                          Icons.shield,
-                          color: Colors.white,
-                          size: 50,
-                        ),
+                        Image.asset(
+                          'assets/images/flamengo.png',
+                          scale: 20,
+                        )
                       ],
                     ),
                   ],
@@ -442,13 +441,6 @@ class _PlayerCardstate extends State<PlayerCard> {
                   ],
                 ),
                 const SizedBox(height: 40),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.share,
-                      size: 30,
-                      color: Colors.white,
-                    ))
               ],
             ),
           ),

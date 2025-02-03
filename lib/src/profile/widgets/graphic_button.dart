@@ -8,16 +8,20 @@ class GrapichButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+    return SizedBox(
+      width: 300,
+      height: 100,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
-      ),
-      onPressed: onPressed,
-      child: Text(
-        'GRÁFICO',
-        style: principalFont.medium(color: Colors.white, fontSize: 15),
+        onPressed: onPressed,
+        child: Text(
+          'GRÁFICO',
+          style: principalFont.medium(color: Colors.white, fontSize: 45),
+        ),
       ),
     );
   }

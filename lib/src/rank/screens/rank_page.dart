@@ -126,6 +126,13 @@ class _RankPageState extends State<RankPage> {
         // Compara as categorias sem considerar o hífen
         return normalizedParticipantCategory == normalizedCategory;
       }).toList();
+
+      // Ordena por overall em ordem decrescente
+      filteredParticipantsList.sort((a, b) {
+        final overallA = a['overall'] ?? 0;
+        final overallB = b['overall'] ?? 0;
+        return overallB.compareTo(overallA); // Decrescente
+      });
     });
   }
 

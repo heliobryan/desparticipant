@@ -10,16 +10,20 @@ class DataCard extends StatelessWidget {
     return Stack(
       children: [
         Center(
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            width: 300,
+            height: 100,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-            ),
-            onPressed: onPressed,
-            child: Text(
-              'DADOS',
-              style: principalFont.medium(color: Colors.white, fontSize: 15),
+              onPressed: onPressed,
+              child: Text(
+                'DADOS',
+                style: principalFont.medium(color: Colors.white, fontSize: 45),
+              ),
             ),
           ),
         ),

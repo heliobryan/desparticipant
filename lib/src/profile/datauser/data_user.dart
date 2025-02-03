@@ -15,8 +15,8 @@ class DadosUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double alturaDouble = double.tryParse(peso) ?? 0;
-    double pesoDouble = double.tryParse(altura) ?? 0;
+    double pesoDouble = double.tryParse(peso) ?? 0;
+    double alturaDouble = double.tryParse(altura) ?? 0;
 
     double imc = (alturaDouble > 0)
         ? alturaDouble / ((pesoDouble / 100) * (pesoDouble / 100))
@@ -52,12 +52,12 @@ class DadosUser extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           Text(
-            'PESO: $peso KG',
+            'PESO: $altura KG',
             style: principalFont.medium(color: Colors.white, fontSize: 20),
           ),
           const SizedBox(height: 20),
           Text(
-            'ALTURA: $altura CM',
+            'ALTURA: $peso CM',
             style: principalFont.medium(color: Colors.white, fontSize: 20),
           ),
           const SizedBox(height: 20),
