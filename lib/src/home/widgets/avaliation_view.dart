@@ -40,28 +40,30 @@ class AvaliationView extends StatelessWidget {
         }
         break;
       case 59:
-        final adjustedScore = score - 2;
-        if (adjustedScore < 15) {
+        final double adjustedScore = score - 2.0;
+
+        if (adjustedScore <= 17.0) {
           return '100';
-        } else if (adjustedScore >= 16 && adjustedScore <= 17) {
-          return '90';
-        } else if (adjustedScore > 17 && adjustedScore <= 22) {
-          final proportionalScore =
-              90 - ((adjustedScore - 17) / (22 - 17) * 20);
+        } else if (adjustedScore > 17.0 && adjustedScore <= 19.0) {
+          final double proportionalScore =
+              90 + ((adjustedScore - 17.0) / (19.0 - 17.0) * 9);
           return proportionalScore.toStringAsFixed(1);
-        } else if (adjustedScore > 23) {
+        } else if (adjustedScore >= 20.0 && adjustedScore <= 22.0) {
+          final double proportionalScore =
+              80 + ((adjustedScore - 20.0) / (22.0 - 20.0) * 9);
+          return proportionalScore.toStringAsFixed(1);
+        } else if (adjustedScore > 23.0) {
           return '70';
         }
-        break;
+
+        return '0'; // Caso nenhuma condição seja atendida, retorna 0.
       case 60:
-        if (score < 15) {
+        if (score <= 17.0) {
           return '100';
-        } else if (score >= 16 && score <= 17) {
-          return '90';
-        } else if (score > 17 && score <= 22) {
-          final proportionalScore = 90 - ((score - 17) / (22 - 17) * 20);
+        } else if (score > 17.0 && score <= 22.0) {
+          final proportionalScore = 90 - ((score - 17.0) / (22.0 - 17.0) * 20);
           return proportionalScore.toStringAsFixed(1);
-        } else if (score > 23) {
+        } else if (score > 22.0) {
           return '70';
         }
         break;

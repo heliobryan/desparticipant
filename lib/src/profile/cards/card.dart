@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayerCard extends StatefulWidget {
-  final String ritValue;
+  final String agiValue;
   final String pesoValue;
   final String alturaValue;
   final String finalValue;
@@ -21,7 +21,7 @@ class PlayerCard extends StatefulWidget {
 
   const PlayerCard({
     super.key,
-    required this.ritValue,
+    required this.agiValue,
     required this.pesoValue,
     required this.alturaValue,
     required this.finalValue,
@@ -111,19 +111,15 @@ class _PlayerCardstate extends State<PlayerCard> {
     }
   }
 
-  String calculateFinalScore(int itemId, int? score) {
-    if (score == null || score == 0) {
-      return '0';
-    }
-
+  String calculateFinalScore(int itemId, double score) {
     switch (itemId) {
       case 16:
         if (score <= 140) {
-          return '80';
+          return (70 + (score / 140) * 10).toInt().toString();
         } else if (score <= 160) {
-          return '90';
+          return (80 + ((score - 140) / 20) * 5).toInt().toString();
         } else if (score <= 180) {
-          return '100';
+          return (85 + ((score - 160) / 20) * 15).toInt().toString();
         }
         break;
       case 17:
@@ -136,19 +132,23 @@ class _PlayerCardstate extends State<PlayerCard> {
         }
         break;
       case 59:
-        final adjustedScore = score - 2;
-        if (adjustedScore < 15) {
+        final double adjustedScore = score - 2.0;
+
+        if (adjustedScore <= 17.0) {
           return '100';
-        } else if (adjustedScore >= 16 && adjustedScore <= 17) {
-          return '90';
-        } else if (adjustedScore > 17 && adjustedScore <= 22) {
-          final proportionalScore =
-              90 - ((adjustedScore - 17) / (22 - 17) * 20);
-          return proportionalScore.toInt().toString();
-        } else if (adjustedScore > 23) {
+        } else if (adjustedScore > 17.0 && adjustedScore <= 19.0) {
+          final double proportionalScore =
+              90 + ((adjustedScore - 17.0) / (19.0 - 17.0) * 9);
+          return proportionalScore.toStringAsFixed(1);
+        } else if (adjustedScore >= 20.0 && adjustedScore <= 22.0) {
+          final double proportionalScore =
+              80 + ((adjustedScore - 20.0) / (22.0 - 20.0) * 9);
+          return proportionalScore.toStringAsFixed(1);
+        } else if (adjustedScore > 23.0) {
           return '70';
         }
-        break;
+
+        return '0';
       case 60:
         if (score < 15) {
           return '100';
@@ -202,18 +202,20 @@ class _PlayerCardstate extends State<PlayerCard> {
       default:
         return score.toInt().toString();
     }
-
-    return '0'; // Garantia de retorno 0 caso nenhum case seja satisfeito
+    return '0'; // Garantia de retorno 0 caso nenhuma condição seja satisfeita
   }
 
   @override
   Widget build(BuildContext context) {
-    int agiNumeric = int.tryParse(widget.ritValue) ?? 0;
-    int fisNumeric = int.tryParse(widget.alturaValue) ?? 0;
-    int finNumeric = int.tryParse(widget.finalValue) ?? 0;
-    int pasNumeric = int.tryParse(widget.finalValue) ?? 0;
-    int driNumeric = int.tryParse(widget.finalValue) ?? 0;
+    double agiNumeric = double.tryParse(widget.agiValue) ?? 0;
+    double fisNumeric = double.tryParse(widget.alturaValue) ?? 0;
+    double finNumeric = double.tryParse(widget.finalValue) ?? 0;
+    double pasNumeric = double.tryParse(widget.passValue) ?? 0;
+    double driNumeric = double.tryParse(widget.driValue) ?? 0;
 
+    print('pas Numeric: $pasNumeric'); // Verifica o valor de pasNumeric
+
+// Passando os valores para a função de cálculo
     String calculatedAgi = calculateFinalScore(61, agiNumeric);
     String calculatedFis = calculateFinalScore(16, fisNumeric);
     String calculatedRit = calculateFinalScore(41, fisNumeric);
@@ -221,6 +223,7 @@ class _PlayerCardstate extends State<PlayerCard> {
     String calculatedPas = calculateFinalScore(54, pasNumeric);
     String calculatedDri = calculateFinalScore(59, driNumeric);
 
+// Convertendo os resultados calculados para inteiros (sem ponto)
     int agi = int.tryParse(calculatedAgi) ?? 0;
     int fis = int.tryParse(calculatedFis) ?? 0;
     int rit = int.tryParse(calculatedRit) ?? 0;

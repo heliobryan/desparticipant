@@ -15,8 +15,8 @@ class DadosUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double pesoDouble = double.tryParse(peso) ?? 0;
-    double alturaDouble = double.tryParse(altura) ?? 0;
+    double alturaDouble = double.tryParse(peso) ?? 0;
+    double pesoDouble = double.tryParse(altura) ?? 0;
 
     double imc = (alturaDouble > 0)
         ? alturaDouble / ((pesoDouble / 100) * (pesoDouble / 100))

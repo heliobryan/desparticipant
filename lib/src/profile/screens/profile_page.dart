@@ -233,20 +233,23 @@ class _ProfilePageState extends State<ProfilePage>
     final finalValue = item55.result;
     final embaixaValue = item41.result;
     final alturaValue = item17.result;
-    final ritValue = item61.result;
+    final agiValeu = item61.result;
 
     String calculatedAgi =
-        calculateFinalScore(61, double.tryParse(ritValue) ?? 0);
+        calculateFinalScore(61, double.tryParse(agiValeu) ?? 0);
     String calculatedFis =
         calculateFinalScore(16, double.tryParse(alturaValue) ?? 0);
-    String calculatedRit =
-        calculateFinalScore(41, double.tryParse(embaixaValue) ?? 0);
     String calculatedFin =
         calculateFinalScore(55, double.tryParse(finalValue) ?? 0);
     String calculatedPas =
         calculateFinalScore(54, double.tryParse(passValue) ?? 0);
+    String calculatedRit =
+        calculateFinalScore(41, 75); // Testando com valor fixo
     String calculatedDri =
-        calculateFinalScore(59, double.tryParse(driValue) ?? 0);
+        calculateFinalScore(59, 60); // Testando com valor fixo
+
+    if (calculatedRit == '0.0') calculatedRit = '60';
+    if (calculatedDri == '0.0') calculatedDri = '60';
 
     double agi = double.tryParse(calculatedAgi) ?? 0;
     double fis = double.tryParse(calculatedFis) ?? 0;
@@ -261,6 +264,15 @@ class _ProfilePageState extends State<ProfilePage>
     debugPrint('calculatedFin: $calculatedFin');
     debugPrint('calculatedPas: $calculatedPas');
     debugPrint('calculatedDri: $calculatedDri');
+
+    // Verificar se algum valor é nulo ou zero
+    debugPrint(
+        'Verificando valores para radar: $agi, $fis, $rit, $fin, $pas, $dri');
+
+    // Garantir que os valores estão corretos
+    if (agi == 0 || fis == 0 || rit == 0 || fin == 0 || pas == 0 || dri == 0) {
+      debugPrint('Um ou mais valores estão zerados!');
+    }
 
     List<List<double>> data = [
       [
@@ -391,7 +403,7 @@ class _ProfilePageState extends State<ProfilePage>
     final embaixaValue = item41.result;
     final pesoValue = item16.result;
     final alturaValue = item17.result;
-    final ritValue = item61.result;
+    final agiValue = item61.result;
 
     debugPrint("Toggling Player Card...");
 
@@ -403,7 +415,7 @@ class _ProfilePageState extends State<ProfilePage>
           child: Material(
             color: Colors.transparent,
             child: PlayerCard(
-              ritValue: ritValue,
+              agiValue: agiValue,
               pesoValue: pesoValue,
               alturaValue: alturaValue,
               embaixaValue: embaixaValue,
@@ -485,17 +497,19 @@ class _ProfilePageState extends State<ProfilePage>
 
   String calculateFinalScore(int? itemId, double? score) {
     if (score == null || score == 0) {
-      return '0.0';
+      return '0'; // Retorna 0 sem ponto
     }
 
     switch (itemId) {
       case 16:
         if (score <= 140) {
-          return (70 + (score / 140) * 10).toStringAsFixed(1);
+          return (70 + (score / 140) * 10)
+              .toInt()
+              .toString(); // Converte para int
         } else if (score <= 160) {
-          return (80 + ((score - 140) / 20) * 5).toStringAsFixed(1);
+          return (80 + ((score - 140) / 20) * 5).toInt().toString();
         } else if (score <= 180) {
-          return (85 + ((score - 160) / 20) * 15).toStringAsFixed(1);
+          return (85 + ((score - 160) / 20) * 15).toInt().toString();
         }
         break;
       case 17:
@@ -507,7 +521,7 @@ class _ProfilePageState extends State<ProfilePage>
           return '90';
         }
         break;
-      case 59:
+      case 59: // Drible
         final adjustedScore = score - 2;
         if (adjustedScore < 15) {
           return '100';
@@ -522,14 +536,14 @@ class _ProfilePageState extends State<ProfilePage>
         }
         break;
       case 60:
-        if (score < 15) {
+        if (score < 15.00) {
           return '100';
-        } else if (score >= 16 && score <= 17) {
+        } else if (score >= 16.00 && score <= 17.00) {
           return '90';
-        } else if (score > 17 && score <= 22) {
+        } else if (score > 17.00 && score <= 22.00) {
           final proportionalScore = 90 - ((score - 17) / (22 - 17) * 20);
-          return proportionalScore.toStringAsFixed(1);
-        } else if (score > 23) {
+          return proportionalScore.toInt().toString(); // Converte para int
+        } else if (score > 23.00) {
           return '70';
         }
         break;
@@ -538,10 +552,13 @@ class _ProfilePageState extends State<ProfilePage>
           return '100';
         } else if (score > 1.8 && score <= 2.5) {
           final proportionalScore = 100 - ((score - 1.8) / (2.5 - 1.8) * 20);
-          return proportionalScore.toStringAsFixed(1);
+          return proportionalScore.toInt().toString(); // Converte para int
         } else if (score > 2.5) {
           final proportionalScore = 60 + ((score - 2.5) / (3.5 - 2.5) * 10);
-          return proportionalScore.clamp(60, 70).toStringAsFixed(1);
+          return proportionalScore
+              .clamp(60, 70)
+              .toInt()
+              .toString(); // Converte para int
         }
         break;
       case 62:
@@ -551,10 +568,13 @@ class _ProfilePageState extends State<ProfilePage>
           return '90';
         } else if (score > 170) {
           final proportionalScore = 90 + ((score - 170) / (180 - 170) * 10);
-          return proportionalScore.clamp(90, 100).toStringAsFixed(1);
+          return proportionalScore
+              .clamp(90, 100)
+              .toInt()
+              .toString(); // Converte para int
         }
         break;
-      case 41:
+      case 41: // Ritmo (Embaixadinha)
         if (score <= 60) {
           return '60';
         } else if (score > 60 && score <= 70) {
@@ -570,12 +590,12 @@ class _ProfilePageState extends State<ProfilePage>
       case 55:
       case 56:
       case 35:
-        return (score * 10).toStringAsFixed(1);
+        return (score * 10).toInt().toString(); // Converte para int
       default:
-        return score.toStringAsFixed(1);
+        return score.toInt().toString(); // Converte para int
     }
 
-    return '0.0'; // Garantia de retorno 0.0 caso nenhum case seja satisfeito
+    return '0'; // Garantia de retorno 0 sem ponto
   }
 
   @override

@@ -54,7 +54,7 @@ class _CardButtonState extends State<CardButton> {
                             children: [
                               const PlayerCard(
                                 key: Key('playerCard'),
-                                ritValue: '',
+                                agiValue: '',
                                 pesoValue: '',
                                 alturaValue: '',
                                 finalValue: '',
