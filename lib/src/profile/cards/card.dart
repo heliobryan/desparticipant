@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:des/src/GlobalConstants/font.dart';
+import 'package:des/src/profile/graph/graph.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +16,7 @@ class PlayerCard extends StatefulWidget {
   final String driValue;
   final String userName;
   final String position;
-  final String userImagePath; // Adicionando a foto
+  final String userImagePath;
 
   const PlayerCard({
     super.key,
@@ -46,7 +44,7 @@ class _PlayerCardstate extends State<PlayerCard> {
   void initState() {
     super.initState();
     _loadImageFromPreferences();
-    loadImageFromSharedPreferences(); // Carrega a imagem salva do SharedPreferences
+    loadImageFromSharedPreferences();
   }
 
   Future<String> loadImageFromPrefs() async {
@@ -55,46 +53,15 @@ class _PlayerCardstate extends State<PlayerCard> {
     return base64Image;
   }
 
-  final ImagePicker _picker = ImagePicker(); // Instancia o ImagePicker
-  XFile? _image; // Variável para armazenar a imagem escolhida ou capturad
+  XFile? _image;
 
-  // Função para carregar a imagem do SharedPreferences
   void _loadImageFromPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    final imagePath =
-        prefs.getString('user_image_path'); // Aqui você pega o caminho
+    final imagePath = prefs.getString('user_image_path');
     if (imagePath != null) {
       setState(() {
-        _imageFile = File(imagePath); // Atualiza a imagem
+        _imageFile = File(imagePath);
       });
-    }
-  }
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(
-      source: ImageSource.camera, // Pode alternar para ImageSource.gallery
-    );
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = pickedFile; // Armazena a imagem escolhida ou capturada
-        _saveImageToSharedPreferences(
-            _image!.path); // Salva o caminho da imagem
-      }
-    });
-  }
-
-  Future<void> _saveImageToSharedPreferences(String imagePath) async {
-    try {
-      // Obtém a instância de SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      // Salva o caminho da imagem no SharedPreferences
-      await prefs.setString('userImagePath', imagePath);
-
-      log("Caminho da imagem salvo em SharedPreferences: $imagePath");
-    } catch (e) {
-      log("Erro ao salvar o caminho da imagem no SharedPreferences: $e");
     }
   }
 
@@ -103,16 +70,17 @@ class _PlayerCardstate extends State<PlayerCard> {
     String? savedImagePath = prefs.getString('userImagePath');
 
     if (savedImagePath != null) {
-      // Caso haja um caminho salvo, podemos usar para carregar a imagem
       setState(() {
-        _image = XFile(savedImagePath); // Usando o caminho da imagem salva
+        _image = XFile(savedImagePath);
       });
     } else {
       log("Nenhuma imagem salva encontrada.");
     }
   }
 
-  String calculateFinalScore(int itemId, double score) {
+  String calculateFinalScore(int itemId, double? score) {
+    if (score == null || score == 0) return '0';
+
     switch (itemId) {
       case 16:
         if (score <= 140) {
@@ -123,6 +91,7 @@ class _PlayerCardstate extends State<PlayerCard> {
           return (85 + ((score - 160) / 20) * 15).toInt().toString();
         }
         break;
+
       case 17:
         if (score <= 35) {
           return '80';
@@ -132,9 +101,9 @@ class _PlayerCardstate extends State<PlayerCard> {
           return '90';
         }
         break;
+
       case 59:
         final double adjustedScore = score - 2.0;
-
         if (adjustedScore <= 17) {
           return '100';
         } else if (adjustedScore > 17 && adjustedScore <= 19) {
@@ -148,8 +117,8 @@ class _PlayerCardstate extends State<PlayerCard> {
         } else if (adjustedScore > 23) {
           return '70';
         }
+        break;
 
-        return '0';
       case 60:
         if (score < 15) {
           return '100';
@@ -162,6 +131,7 @@ class _PlayerCardstate extends State<PlayerCard> {
           return '70';
         }
         break;
+
       case 61:
         if (score <= 1.8) {
           return '100';
@@ -173,6 +143,7 @@ class _PlayerCardstate extends State<PlayerCard> {
           return proportionalScore.clamp(60, 70).toInt().toString();
         }
         break;
+
       case 62:
         if (score >= 120 && score <= 150) {
           return '85';
@@ -183,6 +154,7 @@ class _PlayerCardstate extends State<PlayerCard> {
           return proportionalScore.toInt().toString();
         }
         break;
+
       case 41:
         if (score <= 60) {
           return '60';
@@ -195,15 +167,18 @@ class _PlayerCardstate extends State<PlayerCard> {
           return proportionalScore.toInt().toString();
         }
         break;
+
       case 54:
       case 55:
       case 56:
       case 35:
         return (score * 10).toInt().toString();
+
       default:
         return score.toInt().toString();
     }
-    return '0'; // Garantia de retorno 0 caso nenhuma condição seja satisfeita
+
+    return '0';
   }
 
   @override
@@ -214,9 +189,12 @@ class _PlayerCardstate extends State<PlayerCard> {
     double pasNumeric = double.tryParse(widget.passValue) ?? 0;
     double driNumeric = double.tryParse(widget.driValue) ?? 0;
 
-    print('pas Numeric: $pasNumeric'); // Verifica o valor de pasNumeric
+    log('pas Numeric: $pasNumeric');
+    log('dri numeric: $driNumeric');
+    log('fin numeric: $finNumeric');
+    log('fis numeric: $fisNumeric');
+    log('agi numeric: $agiNumeric');
 
-// Passando os valores para a função de cálculo
     String calculatedAgi = calculateFinalScore(61, agiNumeric);
     String calculatedFis = calculateFinalScore(16, fisNumeric);
     String calculatedRit = calculateFinalScore(41, fisNumeric);
@@ -224,7 +202,6 @@ class _PlayerCardstate extends State<PlayerCard> {
     String calculatedPas = calculateFinalScore(54, pasNumeric);
     String calculatedDri = calculateFinalScore(59, driNumeric);
 
-// Convertendo os resultados calculados para inteiros (sem ponto)
     int agi = int.tryParse(calculatedAgi) ?? 0;
     int fis = int.tryParse(calculatedFis) ?? 0;
     int rit = int.tryParse(calculatedRit) ?? 0;
@@ -233,20 +210,6 @@ class _PlayerCardstate extends State<PlayerCard> {
     int dri = int.tryParse(calculatedDri) ?? 0;
 
     int average = ((agi + fis + rit + fin + pas + dri) / 6).toInt();
-
-    List<Color> gradientColors;
-    if (average > 90) {
-      gradientColors = [Color(0xFFFFD700), Color(0xFF1E1E1E)]; // Dourado
-    } else if (average >= 80 && average <= 89) {
-      gradientColors = [Color(0xFFC0C0C0), Color(0xFF1E1E1E)]; // Prata
-    } else if (average >= 70 && average <= 79) {
-      gradientColors = [Color(0xFF800080), Color(0xFF1E1E1E)]; // Roxo
-    } else {
-      gradientColors = [
-        Color(0xFF1E1E1E),
-        Color(0xFF1E1E1E)
-      ]; // Preto (default)
-    }
 
     return Container(
       decoration: BoxDecoration(
@@ -277,8 +240,8 @@ class _PlayerCardstate extends State<PlayerCard> {
           ),
         ],
       ),
-      width: 350,
-      height: 500,
+      width: 400,
+      height: 700,
       child: Center(
         child: Container(
           decoration: BoxDecoration(
@@ -288,8 +251,8 @@ class _PlayerCardstate extends State<PlayerCard> {
             ),
             borderRadius: const BorderRadius.all(Radius.circular(46)),
           ),
-          width: 342,
-          height: 492,
+          width: 400,
+          height: 700,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -312,7 +275,6 @@ class _PlayerCardstate extends State<PlayerCard> {
                             ),
                           ),
                           child: GestureDetector(
-                            onTap: _pickImage,
                             child: CircleAvatar(
                               radius: 80,
                               backgroundImage: _image == null
@@ -321,7 +283,6 @@ class _PlayerCardstate extends State<PlayerCard> {
                               backgroundColor: Colors.transparent,
                               child: _image == null
                                   ? const Center(
-                                      // Adicionado Center aqui para centralizar o ícone
                                       child: Icon(
                                         Icons.account_circle_outlined,
                                         size: 160,
@@ -373,6 +334,7 @@ class _PlayerCardstate extends State<PlayerCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(widget.userName.toUpperCase(), //NOME DO PARTICIPANTE
+
                         style: principalFont.bold(
                             color: Colors.white, fontSize: 25)),
                     const SizedBox(height: 15),
@@ -440,7 +402,27 @@ class _PlayerCardstate extends State<PlayerCard> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
+                RadarGraph(
+                  data: [
+                    [
+                      agi.toDouble(),
+                      fis.toDouble(),
+                      rit.toDouble(),
+                      fin.toDouble(),
+                      pas.toDouble(),
+                      dri.toDouble()
+                    ]
+                  ],
+                  features: [
+                    'Agilidade',
+                    'Físico',
+                    'Ritmo',
+                    'Finalização',
+                    'Passe',
+                    'Drible'
+                  ],
+                ),
               ],
             ),
           ),

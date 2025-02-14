@@ -1,4 +1,3 @@
-import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/profile/cards/card.dart';
 import 'package:flutter/material.dart';
 
@@ -28,9 +27,15 @@ class _CardButtonState extends State<CardButton> {
                 _isCardVisible = true;
               });
             },
-            child: Text(
-              'CARD',
-              style: principalFont.medium(color: Colors.white, fontSize: 15),
+            child: const Row(
+              children: [
+                Icon(
+                  Icons.badge,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                Text('')
+              ],
             ),
           ),
         ),

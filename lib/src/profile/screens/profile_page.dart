@@ -1,9 +1,5 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:flutter/services.dart';
-import 'package:image/image.dart' as img;
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
@@ -12,10 +8,9 @@ import 'package:des/src/profile/datauser/data_user.dart';
 import 'package:des/src/profile/graph/graph.dart';
 import 'package:des/src/profile/services/profile_service.dart';
 import 'package:des/src/profile/widgets/data_card.dart';
-import 'package:des/src/profile/widgets/graphic_button.dart';
+import 'package:des/src/profile/widgets/avaliation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -45,32 +40,32 @@ class _ProfilePageState extends State<ProfilePage>
   String? category;
   String? position;
   String? name;
+  bool isLoading = true;
+  List<dynamic>? judgments = [];
+  bool _isLoading = false;
 
   bool _isDatacard = false;
   late final AnimationController _controller;
-  final ImagePicker _picker = ImagePicker(); // Instancia o ImagePicker
-  XFile? _image; // Variável para armazenar a imagem escolhida ou capturad
+  final ImagePicker _picker = ImagePicker();
+  XFile? _image;
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(
-      source: ImageSource.camera, // Pode alternar para ImageSource.gallery
+      source: ImageSource.camera,
     );
 
     setState(() {
       if (pickedFile != null) {
-        _image = pickedFile; // Armazena a imagem escolhida ou capturada
-        _saveImageToSharedPreferences(
-            _image!.path); // Salva o caminho da imagem
+        _image = pickedFile;
+        _saveImageToSharedPreferences(_image!.path);
       }
     });
   }
 
   Future<void> _saveImageToSharedPreferences(String imagePath) async {
     try {
-      // Obtém a instância de SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      // Salva o caminho da imagem no SharedPreferences
       await prefs.setString('userImagePath', imagePath);
 
       log("Caminho da imagem salvo em SharedPreferences: $imagePath");
@@ -84,9 +79,8 @@ class _ProfilePageState extends State<ProfilePage>
     String? savedImagePath = prefs.getString('userImagePath');
 
     if (savedImagePath != null) {
-      // Caso haja um caminho salvo, podemos usar para carregar a imagem
       setState(() {
-        _image = XFile(savedImagePath); // Usando o caminho da imagem salva
+        _image = XFile(savedImagePath);
       });
     } else {
       log("Nenhuma imagem salva encontrada.");
@@ -95,14 +89,11 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   void initState() {
-    log("Dados recebidos na ProfilePage:");
-    log("evaluationName: ${widget.evaluationName}");
-    log("result: ${widget.result}");
-    log("finalScore: ${widget.finalScore}");
     super.initState();
     log("Inicializando ProfilePage...");
     loadUserData();
-    loadImageFromSharedPreferences(); // Carrega a imagem salva do SharedPreferences
+    loadImageFromSharedPreferences();
+    loadJudgments();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -110,25 +101,102 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  // Função para carregar os dados do usuário
+  void loadJudgments() async {
+    try {
+      log("[loadJudgments] Iniciando carregamento dos julgamentos...");
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+
+      String? token = sharedPreferences.getString('token');
+      String? evaluationId = sharedPreferences.getString('evaluationId');
+      String? participantId = sharedPreferences.getString('participantId');
+
+      log("[loadJudgments] Dados carregados do SharedPreferences:");
+      log(" - token: $token");
+      log(" - evaluationId: $evaluationId");
+      log(" - participantId: $participantId");
+
+      if (token != null && evaluationId != null) {
+        log("[loadJudgments] Token e Evaluation ID encontrados. Buscando julgamentos...");
+
+        final fetchedJudgments =
+            await homeService.fetchJudgments(token, int.parse(evaluationId));
+
+        log("[loadJudgments] Julgamentos retornados: $fetchedJudgments");
+
+        setState(() {
+          judgments = fetchedJudgments;
+          isLoading = false;
+        });
+      } else {
+        log("[loadJudgments] Token ou Evaluation ID não encontrados. Buscando na API...");
+
+        final loadToken = await homeService.loadToken();
+        log("[loadJudgments] Novo token carregado da API: $loadToken");
+
+        if (participantId == null) {
+          log("[loadJudgments] participantId não encontrado. Buscando na API...");
+          final userData = await homeService.userInfo(loadToken);
+          participantId = userData?['participant']?['id']?.toString();
+
+          log("[loadJudgments] Dados retornados de userInfo: $userData");
+          log("[loadJudgments] participantId obtido: $participantId");
+
+          if (participantId != null) {
+            sharedPreferences.setString('participantId', participantId);
+          } else {
+            log("[loadJudgments] Falha ao obter participantId.");
+            setState(() => isLoading = false);
+            return;
+          }
+        }
+
+        final fetchedEvaluationId = await homeService.fetchEvaluationId(
+            loadToken, int.parse(participantId));
+
+        log("[loadJudgments] Evaluation ID obtido: $fetchedEvaluationId");
+
+        if (fetchedEvaluationId != null) {
+          sharedPreferences.setString('token', loadToken);
+          sharedPreferences.setString(
+              'evaluationId', fetchedEvaluationId.toString());
+
+          final fetchedJudgments =
+              await homeService.fetchJudgments(loadToken, fetchedEvaluationId);
+
+          log("[loadJudgments] Julgamentos retornados após requisição: $fetchedJudgments");
+
+          setState(() {
+            judgments = fetchedJudgments;
+            isLoading = false;
+          });
+        } else {
+          log("[loadJudgments] Falha ao obter evaluation_id.");
+          setState(() => isLoading = false);
+        }
+      }
+
+      log("[loadJudgments] Finalizado carregamento de informações.");
+    } catch (e) {
+      log("[loadJudgments] Erro ao carregar os julgamentos: $e");
+      setState(() => isLoading = false);
+    }
+  }
+
   Future<void> loadUserData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    // Verifica se os dados já estão salvos no SharedPreferences
     userName = sharedPreferences.getString('userName');
     userId = sharedPreferences.getString('userId');
     category = sharedPreferences.getString('category');
     position = sharedPreferences.getString('position');
 
-    // Se os dados estiverem salvos, não faz a requisição novamente
     if (userName != null &&
         userId != null &&
         category != null &&
         position != null) {
       debugPrint("Dados encontrados no SharedPreferences.");
-      setState(() {
-        // Atualiza o estado com os dados salvos
-      });
+      setState(() {});
     } else {
       debugPrint(
           "Dados não encontrados no SharedPreferences, buscando na API...");
@@ -136,7 +204,6 @@ class _ProfilePageState extends State<ProfilePage>
       final responseData = await homeService.fetchParticipantDetails(token);
 
       if (responseData != null) {
-        // Dados recebidos da API
         debugPrint("Dados recebidos no loadUserData: $responseData");
 
         final participant = responseData;
@@ -149,7 +216,6 @@ class _ProfilePageState extends State<ProfilePage>
           position = participant['position'] ?? 'Sem Posição';
         });
 
-        // Salva as informações no SharedPreferences para futuras consultas
         await sharedPreferences.setString('userName', userName ?? '');
         await sharedPreferences.setString('userId', userId ?? '');
         await sharedPreferences.setString('category', category ?? '');
@@ -160,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
-  void toggleRadarGraph() {
+  Future<void> toggleRadarGraph() async {
     final item61 = widget.allEvaluations.firstWhere(
       (evaluation) => evaluation.itemId == 61,
       orElse: () => const AvaliationView(
@@ -183,17 +249,7 @@ class _ProfilePageState extends State<ProfilePage>
         evaId: '',
       ),
     );
-    final item41 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 41,
-      orElse: () => const AvaliationView(
-        itemId: 41,
-        evaluationName: 'Embaixadinha',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
+
     final item55 = widget.allEvaluations.firstWhere(
       (evaluation) => evaluation.itemId == 55,
       orElse: () => const AvaliationView(
@@ -216,22 +272,9 @@ class _ProfilePageState extends State<ProfilePage>
         evaId: '',
       ),
     );
-    final item59 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 59,
-      orElse: () => const AvaliationView(
-        itemId: 59,
-        evaluationName: 'Drible',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
 
-    final driValue = item59.result;
     final passValue = item54.result;
     final finalValue = item55.result;
-    final embaixaValue = item41.result;
     final alturaValue = item17.result;
     final agiValeu = item61.result;
 
@@ -243,10 +286,8 @@ class _ProfilePageState extends State<ProfilePage>
         calculateFinalScore(55, double.tryParse(finalValue) ?? 0);
     String calculatedPas =
         calculateFinalScore(54, double.tryParse(passValue) ?? 0);
-    String calculatedRit =
-        calculateFinalScore(41, 75); // Testando com valor fixo
-    String calculatedDri =
-        calculateFinalScore(59, 60); // Testando com valor fixo
+    String calculatedRit = calculateFinalScore(41, 75);
+    String calculatedDri = calculateFinalScore(59, 60);
 
     if (calculatedRit == '0.0') calculatedRit = '60';
     if (calculatedDri == '0.0') calculatedDri = '60';
@@ -265,15 +306,12 @@ class _ProfilePageState extends State<ProfilePage>
     debugPrint('calculatedPas: $calculatedPas');
     debugPrint('calculatedDri: $calculatedDri');
 
-    // Verificar se algum valor é nulo ou zero
     debugPrint(
         'Verificando valores para radar: $agi, $fis, $rit, $fin, $pas, $dri');
 
-    // Garantir que os valores estão corretos
     if (agi == 0 || fis == 0 || rit == 0 || fin == 0 || pas == 0 || dri == 0) {
       debugPrint('Um ou mais valores estão zerados!');
     }
-
     List<List<double>> data = [
       [
         fin, // Finalização
@@ -315,97 +353,52 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   void togglePlayerCard() async {
+    setState(() {
+      // Ativando o loading antes de carregar os dados
+      _isLoading = true;
+    });
+
     final prefs = await SharedPreferences.getInstance();
-    final userImagePath =
-        prefs.getString('user_image_path'); // ou getString('user_image_base64')
+    final userImagePath = prefs.getString('userImagePath') ?? '';
+    final currentUserName = userName ?? prefs.getString('userName') ?? '';
+    final currentPosition = position ?? prefs.getString('position') ?? '';
 
-    final item61 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 61,
-      orElse: () => const AvaliationView(
-        itemId: 61,
-        evaluationName: 'Sprint',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item16 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 16,
-      orElse: () => const AvaliationView(
-        itemId: 16,
-        evaluationName: 'Peso',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item17 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 17,
-      orElse: () => const AvaliationView(
-        itemId: 17,
-        evaluationName: 'Altura',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item41 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 41,
-      orElse: () => const AvaliationView(
-        itemId: 41,
-        evaluationName: 'Embaixadinha',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item55 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 55,
-      orElse: () => const AvaliationView(
-        itemId: 55,
-        evaluationName: 'Finalização',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item54 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 54,
-      orElse: () => const AvaliationView(
-        itemId: 54,
-        evaluationName: 'Passe',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item59 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 59,
-      orElse: () => const AvaliationView(
-        itemId: 59,
-        evaluationName: 'Drible',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
+    final List<int> expectedItemIds = [61, 16, 17, 41, 55, 54, 59];
 
-    final driValue = item59.result;
-    final passValue = item54.result;
-    final finalValue = item55.result;
-    final embaixaValue = item41.result;
-    final pesoValue = item16.result;
-    final alturaValue = item17.result;
-    final agiValue = item61.result;
+    // Mapeando os scores com base nos judgments
+    final Map<int, String> resultsMap = {
+      for (var judgment in judgments!)
+        if (judgment != null &&
+            judgment['item'] != null &&
+            judgment['item']['id'] != null)
+          judgment['item']['id']: judgment['score']?.toString() ?? 'N/A',
+    };
 
-    debugPrint("Toggling Player Card...");
+    final agiValue = resultsMap[61] ?? '';
+    final pesoValue = resultsMap[16] ?? '';
+    final alturaValue = resultsMap[17] ?? '';
+    final embaixaValue = resultsMap[41] ?? '';
+    final finalValue = resultsMap[55] ?? '';
+    final passValue = resultsMap[54] ?? '';
+    final driValue = resultsMap[59] ?? '';
+
+    debugPrint("Toggle Player Card:");
+    debugPrint("Agilidade (item 61): $agiValue");
+    debugPrint("Peso (item 16): $pesoValue");
+    debugPrint("Altura (item 17): $alturaValue");
+    debugPrint("Embaixadinha (item 41): $embaixaValue");
+    debugPrint("Finalização (item 55): $finalValue");
+    debugPrint("Passe (item 54): $passValue");
+    debugPrint("Drible (item 59): $driValue");
+    debugPrint("Username: $currentUserName, Position: $currentPosition");
+
+    // Simulando um pequeno delay para o loading
+    await Future.delayed(Duration(milliseconds: 1));
+
+    setState(() {
+      // Desativando o loading após o delay
+      _isLoading = false;
+    });
 
     showDialog(
       context: context,
@@ -422,9 +415,9 @@ class _ProfilePageState extends State<ProfilePage>
               finalValue: finalValue,
               passValue: passValue,
               driValue: driValue,
-              userName: userName ?? '',
-              position: position ?? '',
-              userImagePath: userImagePath ?? '', // Passando a foto
+              userName: currentUserName,
+              position: currentPosition,
+              userImagePath: userImagePath,
             ),
           ),
         );
@@ -432,32 +425,29 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  void toggleDadosUser() {
-    final item16 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 16,
-      orElse: () => const AvaliationView(
-        itemId: 17,
-        evaluationName: 'Peso',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
-    final item17 = widget.allEvaluations.firstWhere(
-      (evaluation) => evaluation.itemId == 17,
-      orElse: () => const AvaliationView(
-        itemId: 16,
-        evaluationName: 'Altura',
-        result: '',
-        finalScore: '',
-        allEvaluations: [],
-        evaId: '',
-      ),
-    );
+  void toggleDadosUser() async {
+    // Buscar as preferências do usuário
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserName = userName ?? prefs.getString('userName') ?? '';
+    final currentPosition = position ?? prefs.getString('position') ?? '';
 
-    final peso = item16.result;
-    final altura = item17.result;
+    // Mapeando os scores de Peso (item 16) e Altura (item 17) a partir dos judgments
+    final Map<int, String> resultsMap = {
+      for (var judgment in judgments!)
+        if (judgment != null &&
+            judgment['item'] != null &&
+            judgment['item']['id'] != null)
+          judgment['item']['id']: judgment['score']?.toString() ?? 'N/A',
+    };
+
+    final pesoValue = resultsMap[16] ?? '';
+    final alturaValue = resultsMap[17] ?? '';
+
+    // Log para verificar os dados de Peso e Altura
+    debugPrint("Toggle Dados User:");
+    debugPrint("Peso (item 16): $pesoValue");
+    debugPrint("Altura (item 17): $alturaValue");
+    debugPrint("Username: $currentUserName, Position: $currentPosition");
 
     if (!_isDatacard) {
       setState(() {
@@ -472,8 +462,8 @@ class _ProfilePageState extends State<ProfilePage>
             child: Material(
               color: Colors.transparent,
               child: DadosUser(
-                peso: peso,
-                altura: altura,
+                peso: pesoValue,
+                altura: alturaValue,
                 onClose: () {
                   setState(() {
                     _isDatacard = false;
@@ -497,19 +487,19 @@ class _ProfilePageState extends State<ProfilePage>
 
   String calculateFinalScore(int? itemId, double? score) {
     if (score == null || score == 0) {
-      return '0'; // Retorna 0 sem ponto
+      return '0';
     }
 
     switch (itemId) {
       case 16:
         if (score <= 140) {
-          return (70 + (score / 140) * 10)
-              .toInt()
-              .toString(); // Converte para int
+          return (70 + (score / 140) * 10).toInt().toString();
         } else if (score <= 160) {
           return (80 + ((score - 140) / 20) * 5).toInt().toString();
         } else if (score <= 180) {
           return (85 + ((score - 160) / 20) * 15).toInt().toString();
+        } else if (score == 0) {
+          return '0';
         }
         break;
       case 17:
@@ -519,9 +509,11 @@ class _ProfilePageState extends State<ProfilePage>
           return '85';
         } else if (score <= 60) {
           return '90';
+        } else if (score == 0) {
+          return '0';
         }
         break;
-      case 59: // Drible
+      case 59:
         final adjustedScore = score - 2;
         if (adjustedScore < 15) {
           return '100';
@@ -533,6 +525,8 @@ class _ProfilePageState extends State<ProfilePage>
           return proportionalScore.toStringAsFixed(1);
         } else if (adjustedScore > 23) {
           return '70';
+        } else if (score == 0) {
+          return '0';
         }
         break;
       case 60:
@@ -542,9 +536,11 @@ class _ProfilePageState extends State<ProfilePage>
           return '90';
         } else if (score > 17.00 && score <= 22.00) {
           final proportionalScore = 90 - ((score - 17) / (22 - 17) * 20);
-          return proportionalScore.toInt().toString(); // Converte para int
+          return proportionalScore.toInt().toString();
         } else if (score > 23.00) {
           return '70';
+        } else if (score == 0) {
+          return '0';
         }
         break;
       case 61:
@@ -552,13 +548,12 @@ class _ProfilePageState extends State<ProfilePage>
           return '100';
         } else if (score > 1.8 && score <= 2.5) {
           final proportionalScore = 100 - ((score - 1.8) / (2.5 - 1.8) * 20);
-          return proportionalScore.toInt().toString(); // Converte para int
+          return proportionalScore.toInt().toString();
         } else if (score > 2.5) {
           final proportionalScore = 60 + ((score - 2.5) / (3.5 - 2.5) * 10);
-          return proportionalScore
-              .clamp(60, 70)
-              .toInt()
-              .toString(); // Converte para int
+          return proportionalScore.clamp(60, 70).toInt().toString();
+        } else if (score == 0) {
+          return '0';
         }
         break;
       case 62:
@@ -568,13 +563,12 @@ class _ProfilePageState extends State<ProfilePage>
           return '90';
         } else if (score > 170) {
           final proportionalScore = 90 + ((score - 170) / (180 - 170) * 10);
-          return proportionalScore
-              .clamp(90, 100)
-              .toInt()
-              .toString(); // Converte para int
+          return proportionalScore.clamp(90, 100).toInt().toString();
+        } else if (score == 0) {
+          return '0';
         }
         break;
-      case 41: // Ritmo (Embaixadinha)
+      case 41:
         if (score <= 60) {
           return '60';
         } else if (score > 60 && score <= 70) {
@@ -584,18 +578,19 @@ class _ProfilePageState extends State<ProfilePage>
         } else if (score > 100) {
           final proportionalScore = 100 - ((score - 100) / (120 - 100) * 20);
           return proportionalScore.clamp(100, 100).toStringAsFixed(1);
+        } else if (score == 0) {
+          return '0';
         }
         break;
       case 54:
       case 55:
       case 56:
       case 35:
-        return (score * 10).toInt().toString(); // Converte para int
+        return (score * 10).toInt().toString();
       default:
-        return score.toInt().toString(); // Converte para int
+        return score.toInt().toString();
     }
-
-    return '0'; // Garantia de retorno 0 sem ponto
+    return '0';
   }
 
   @override
@@ -604,15 +599,7 @@ class _ProfilePageState extends State<ProfilePage>
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: const Color(0xFF1E1E1E),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-        ),
+        backgroundColor: const Color(0XFF1E1E1E),
         actions: [
           IconButton(
             icon: const Icon(
@@ -627,9 +614,10 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         ],
         title: Text(
-          'PERFIL',
+          'BEM VINDO $userName',
           style: principalFont.medium(color: Colors.white, fontSize: 20),
         ),
+        centerTitle: false,
       ),
       body: Stack(
         children: [
@@ -662,12 +650,11 @@ class _ProfilePageState extends State<ProfilePage>
                         backgroundColor: Colors.transparent,
                         child: _image == null
                             ? const Icon(
-                                Icons.account_circle_outlined, // Ícone da conta
-                                size:
-                                    120, // Ajuste o tamanho conforme necessário
-                                color: Colors.grey, // Cor do ícone
+                                Icons.account_circle_outlined,
+                                size: 120,
+                                color: Colors.grey,
                               )
-                            : null, // Se tiver imagem, não exibe o ícone
+                            : null,
                       ),
                     )
                   ],
@@ -700,38 +687,107 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
                 const SizedBox(height: 20),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GrapichButton(onPressed: toggleRadarGraph),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 20),
+                        ...judgments!
+                            .where((judgment) =>
+                                judgment != null &&
+                                judgment['item'] != null &&
+                                judgment['item']['id'] != null &&
+                                judgment['item']['name'] != null)
+                            .map<Widget>((judgment) {
+                          int itemId = judgment['item']['id'];
+                          String result =
+                              judgment['score']?.toString() ?? 'N/A';
+
+                          return Visibility(
+                            visible: false,
+                            child: AvaliationView(
+                              evaluationName:
+                                  judgment['item']['name']?.toString() ?? 'N/A',
+                              result: result,
+                              finalScore: result,
+                              itemId: itemId,
+                              allEvaluations: judgments!
+                                  .map((j) => AvaliationView(
+                                        evaluationName:
+                                            j['item']['name']?.toString() ??
+                                                'N/A',
+                                        result: j['score']?.toString() ?? 'N/A',
+                                        finalScore:
+                                            j['score']?.toString() ?? 'N/A',
+                                        itemId: j['item']['id'] ?? 0,
+                                        allEvaluations: const [],
+                                        evaId: '',
+                                      ))
+                                  .toList(),
+                              evaId: '',
+                            ),
+                          );
+                        }),
+                        SizedBox(
+                          width: 300,
+                          height: 100,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: togglePlayerCard,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.badge,
+                                  color: Colors.white,
+                                  size: 50,
+                                ),
+                                const SizedBox(width: 20),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      'CARD',
+                                      style: principalFont.medium(
+                                          color: Colors.white, fontSize: 35),
+                                    ),
+                                    Container(
+                                      width: 145,
+                                      height: 30,
+                                      decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12))),
+                                      child: Text(
+                                        'VEJA SUA PONTUAÇÃO',
+                                        style: principalFont.medium(
+                                            color: Colors.white, fontSize: 10),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        onPressed: togglePlayerCard,
-                        child: Text(
-                          'CARD',
-                          style: principalFont.medium(
-                              color: Colors.white, fontSize: 45),
-                        ),
-                      ),
+                        const SizedBox(height: 20),
+                        DataCard(onPressed: toggleDadosUser),
+                        const SizedBox(height: 20),
+                        const AvaliatonButton(),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    DataCard(onPressed: toggleDadosUser),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 25),
                 SizedBox(
-                  width: 10,
-                  height: 10,
+                  width: 1,
+                  height: 1,
                   child: Visibility(
                     visible: false,
                     child: ListView.builder(

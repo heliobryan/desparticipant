@@ -20,9 +20,40 @@ class DataCard extends StatelessWidget {
                 ),
               ),
               onPressed: onPressed,
-              child: Text(
-                'DADOS',
-                style: principalFont.medium(color: Colors.white, fontSize: 45),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.analytics,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                  const SizedBox(width: 20),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 10),
+                      Text(
+                        'DADOS',
+                        style: principalFont.medium(
+                          color: Colors.white,
+                          fontSize: 35,
+                        ),
+                      ),
+                      Container(
+                        width: 145,
+                        height: 30,
+                        decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: Text(
+                          'ALTURA, PESO E IMC',
+                          style: principalFont.medium(
+                              color: Colors.white, fontSize: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

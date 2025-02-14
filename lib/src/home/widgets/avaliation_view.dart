@@ -15,7 +15,7 @@ class AvaliationView extends StatelessWidget {
     required this.result,
     required this.finalScore,
     this.itemId,
-    required this.allEvaluations, // Lista de todas as avaliações
+    required this.allEvaluations,
     required this.evaId,
   });
 
@@ -60,7 +60,7 @@ class AvaliationView extends StatelessWidget {
           return '70';
         }
 
-        return '0'; // Caso nenhuma condição seja atendida, retorna 0.
+        return '0';
       case 60:
         if (score <= 17.0) {
           return '100';

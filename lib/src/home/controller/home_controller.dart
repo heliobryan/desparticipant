@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_final_fields
-import 'package:des/src/home/screens/home_screen.dart';
+import 'package:des/src/profile/screens/profile_page.dart';
 import 'package:des/src/rank/screens/rank_page.dart';
 import 'package:des/src/marketplace/screens/market_page.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _screens = [
-      const AlternateHome(),
+      const ProfilePage(
+          evaluationName: '', result: '', finalScore: '', allEvaluations: []),
       const RankPage(),
       const MarketPage(),
     ];
@@ -35,8 +36,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        physics:
-            const NeverScrollableScrollPhysics(), // Impede a navegação por swipe
+        physics: const NeverScrollableScrollPhysics(),
         children: _screens,
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -68,14 +68,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         child: NavigationBar(
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: const Color(0XFF1E1E1E),
           onDestinationSelected: (int index) {
             _navigateToPage(index);
           },
           destinations: const [
             NavigationDestination(
-              icon: Icon(Icons.home),
-              label: 'Home',
+              icon: Icon(Icons.account_circle_outlined),
+              label: 'Perfil',
             ),
             NavigationDestination(
               icon: Icon(Icons.emoji_events),
@@ -91,7 +91,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Função para realizar a transição suave entre as telas
   void _navigateToPage(int index) {
     setState(() {
       currentPageIndex = index;

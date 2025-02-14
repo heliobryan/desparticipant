@@ -4,14 +4,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileService {
-  // Método para carregar o token
   Future<String> loadToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     final token = sharedPreferences.getString('token');
     return token ?? '';
   }
 
-  // Buscar informações básicas do usuário (name, id, etc.)
   Future<Map<String, dynamic>?> userInfo(String token) async {
     try {
       var url = Uri.parse('https://api.des.versatecnologia.com.br/api/user');
@@ -28,7 +26,6 @@ class ProfileService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // Retornar as informações do usuário logado
         return data as Map<String, dynamic>;
       }
     } catch (e) {
@@ -37,7 +34,6 @@ class ProfileService {
     return null;
   }
 
-  // Buscar detalhes do participante com base no token
   Future<Map<String, dynamic>?> fetchParticipantDetails(String token) async {
     try {
       log("Fetching participant details for logged user");
@@ -76,7 +72,6 @@ class ProfileService {
     return null;
   }
 
-  // Buscar o score do julgamento baseado no evaluationId
   Future<String?> fetchScore(String token, int evaluationId) async {
     final url = Uri.parse(
       'https://api.des.versatecnologia.com.br/api/evaluations/$evaluationId',
@@ -115,7 +110,6 @@ class ProfileService {
     return null;
   }
 
-  // Buscar todos os julgamentos
   Future<Map<String, dynamic>?> fetchParticipantScores(
       String token, String participantId) async {
     try {
@@ -136,14 +130,87 @@ class ProfileService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // Retorna os scores do participante
-        return data['scores']; // Supondo que o JSON tenha a chave 'scores'
+        return data['scores'];
       } else {
         log("Unexpected error: ${response.statusCode}");
       }
     } catch (e) {
       log('Error fetching participant scores: $e');
     }
+    return null;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchJudgments(
+      String token, int evaluationId) async {
+    final url = Uri.parse(
+        'https://api.des.versatecnologia.com.br/api/evaluations/$evaluationId');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      log('[fetchJudgments] Request enviado para $url');
+      log('[fetchJudgments] Response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        log('[fetchJudgments] Dados dos julgamentos recebidos: $data');
+
+        if (data.containsKey('judgments') && data['judgments'] is List) {
+          final judgments = List<Map<String, dynamic>>.from(data['judgments']);
+          log('[fetchJudgments] Julgamentos processados com sucesso: $judgments');
+          return judgments;
+        } else {
+          log('[fetchJudgments] Nenhum julgamento encontrado no campo "judgments".');
+        }
+      } else {
+        log('[fetchJudgments] Erro na requisição: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e, stackTrace) {
+      log('[fetchJudgments] Erro ao buscar julgamentos: $e');
+      log('[fetchJudgments] StackTrace: $stackTrace');
+    }
+
+    return [];
+  }
+
+  Future<int?> fetchEvaluationId(String token, int participantId) async {
+    final url = Uri.parse(
+        'https://api.des.versatecnologia.com.br/api/participants/$participantId');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        log('[fetchEvaluationId] Dados recebidos: $data');
+
+        if (data['evaluations'] != null && data['evaluations'].isNotEmpty) {
+          final evaluationId = data['evaluations'][0]['id'];
+          log('[fetchEvaluationId] evaluation_id encontrado: $evaluationId');
+          return evaluationId;
+        } else {
+          log('[fetchEvaluationId] Nenhuma avaliação encontrada para o participantId: $participantId');
+        }
+      } else {
+        log('[fetchEvaluationId] Erro na requisição: ${response.statusCode}');
+      }
+    } catch (e) {
+      log('[fetchEvaluationId] Erro ao buscar evaluation_id: $e');
+    }
+
+    log('[fetchEvaluationId] Retornando null para o evaluation_id.');
     return null;
   }
 }

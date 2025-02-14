@@ -105,33 +105,28 @@ class _RankPageState extends State<RankPage> {
     debugPrint('[filterByCategory] Categoria selecionada: $category');
     setState(() {
       selectedCategory = category;
-      // Normaliza a categoria selecionada
       String normalizedCategory =
-          category.trim().toUpperCase().replaceAll('-', ' ');
+          category.trim().toUpperCase().replaceAll('-', 'z ');
 
       debugPrint(
           '[filterByCategory] Categoria selecionada (normalizada): $normalizedCategory');
 
       filteredParticipantsList = participantsList.where((participant) {
         var participantCategory = participant['category'] ?? '';
-        // Normaliza a categoria do participante
         String normalizedParticipantCategory =
             participantCategory.trim().toUpperCase().replaceAll('-', ' ');
-
         debugPrint(
             '[filterByCategory] Verificando categoria participante: $participantCategory');
         debugPrint(
             '[filterByCategory] Categoria participante (normalizada): $normalizedParticipantCategory');
 
-        // Compara as categorias sem considerar o hífen
         return normalizedParticipantCategory == normalizedCategory;
       }).toList();
 
-      // Ordena por overall em ordem decrescente
       filteredParticipantsList.sort((a, b) {
         final overallA = a['overall'] ?? 0;
         final overallB = b['overall'] ?? 0;
-        return overallB.compareTo(overallA); // Decrescente
+        return overallB.compareTo(overallA);
       });
     });
   }
@@ -141,7 +136,7 @@ class _RankPageState extends State<RankPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: const Color(0XFF1E1E1E),
         actions: [
           IconButton(
             icon: const Icon(
@@ -174,9 +169,7 @@ class _RankPageState extends State<RankPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FilterRank(
-                    onCategorySelected:
-                        filterByCategory), // Passa a função de filtro
+                FilterRank(onCategorySelected: filterByCategory),
                 const SizedBox(width: 10),
                 const FilterGender(),
               ],
@@ -190,9 +183,8 @@ class _RankPageState extends State<RankPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  Icons
-                                      .warning_amber_rounded, // Um ícone de aviso
+                                const Icon(
+                                  Icons.warning_amber_rounded,
                                   size: 50,
                                   color: Colors.white,
                                 ),
@@ -236,9 +228,8 @@ class _RankPageState extends State<RankPage> {
                               } else if (index == 3) {
                                 borderColor = const Color(0xFFCD7F32);
                               } else {
-                                borderColor = const Color(0xFF6A0DAD);
+                                borderColor = const Color(0xFFC52613);
                               }
-
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0, vertical: 8.0),
@@ -254,7 +245,7 @@ class _RankPageState extends State<RankPage> {
                               );
                             },
                           ),
-                  )
+                  ),
           ],
         ),
       ),

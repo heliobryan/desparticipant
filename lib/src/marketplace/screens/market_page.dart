@@ -31,7 +31,7 @@ class _MarketPageState extends State<MarketPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: const Color(0xFF121212),
         actions: [
           IconButton(
             icon: const Icon(

@@ -1,6 +1,5 @@
 import 'package:des/src/GlobalConstants/images.dart';
 import 'package:des/src/home/controller/home_controller.dart';
-import 'package:des/src/home/screens/home_screen.dart';
 import 'package:des/src/login/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
