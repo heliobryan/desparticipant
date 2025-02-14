@@ -11,8 +11,9 @@ class DataCard extends StatelessWidget {
       children: [
         Center(
           child: SizedBox(
-            width: 300,
-            height: 100,
+            width: MediaQuery.of(context).size.width * 0.75, // Largura ajustada
+            height:
+                MediaQuery.of(context).size.height * 0.12, // Altura ajustada
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -22,36 +23,42 @@ class DataCard extends StatelessWidget {
               onPressed: onPressed,
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.analytics,
                     color: Colors.white,
-                    size: 50,
+                    size: MediaQuery.of(context).size.width *
+                        0.12, // Ícone ajustado
                   ),
-                  const SizedBox(width: 20),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        'DADOS',
-                        style: principalFont.medium(
-                          color: Colors.white,
-                          fontSize: 35,
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width *
+                          0.05), // Espaçamento entre ícone e texto
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // Alinhamento à esquerda
+                      children: [
+                        Text(
+                          'DADOS',
+                          style: principalFont.medium(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(context).size.width *
+                                0.07, // Tamanho ajustado para o título
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: 145,
-                        height: 30,
-                        decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12))),
-                        child: Text(
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height *
+                                0.005), // Espaçamento ajustado
+                        Text(
                           'ALTURA, PESO E IMC',
                           style: principalFont.medium(
-                              color: Colors.white, fontSize: 10),
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(context).size.width *
+                                0.03, // Tamanho menor para o subtítulo
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

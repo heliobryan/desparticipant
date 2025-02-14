@@ -217,27 +217,27 @@ class _PlayerCardstate extends State<PlayerCard> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFFCBA135),
+            Color(0xFFC0C0C0),
             Color(0xFF1E1E1E),
             Color(0xFF1E1E1E),
           ],
         ),
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         boxShadow: [
-          BoxShadow(
-            // ignore: deprecated_member_use
-            color: Colors.amber.withOpacity(0.5),
-            spreadRadius: -8,
-            blurRadius: 10,
-            offset: const Offset(0, 0),
-          ),
-          BoxShadow(
-            // ignore: deprecated_member_use
-            color: Colors.amber.withOpacity(0.3),
-            spreadRadius: 12,
-            blurRadius: 25,
-            offset: const Offset(0, 0),
-          ),
+          // BoxShadow(
+          //   // ignore: deprecated_member_use
+          //   color: Color(0xFFC0C0C0),
+          //   spreadRadius: -8,
+          //   blurRadius: 10,
+          //   offset: const Offset(0, 0),
+          // ),
+          // BoxShadow(
+          //   // ignore: deprecated_member_use
+          //   color: Color(0xFFC0C0C0),
+          //   spreadRadius: 12,
+          //   blurRadius: 25,
+          //   offset: const Offset(0, 0),
+          // ),
         ],
       ),
       width: 400,
@@ -246,7 +246,7 @@ class _PlayerCardstate extends State<PlayerCard> {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: const Color(0xFFCBA135),
+              color: const Color(0xFFC0C0C0),
               width: 1,
             ),
             borderRadius: const BorderRadius.all(Radius.circular(46)),

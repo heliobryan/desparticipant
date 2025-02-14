@@ -204,6 +204,15 @@ class _RankPageState extends State<RankPage> {
                         : ListView.builder(
                             itemCount: filteredParticipantsList.length,
                             itemBuilder: (context, index) {
+                              // Ordena a lista de participantes com base no overall (maior para menor)
+                              filteredParticipantsList.sort((a, b) {
+                                // Verifica se o valor de 'overall' é null e atribui 0 caso seja
+                                final overallA = a['overall'] ?? 0;
+                                final overallB = b['overall'] ?? 0;
+                                return overallB.compareTo(
+                                    overallA); // Compara os valores 'overall'
+                              });
+
                               final participant =
                                   filteredParticipantsList[index];
                               final user = participant['user'];
@@ -230,12 +239,13 @@ class _RankPageState extends State<RankPage> {
                               } else {
                                 borderColor = const Color(0xFFC52613);
                               }
+
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0, vertical: 8.0),
                                 child: RankCard(
                                   name: fullName,
-                                  position: position,
+                                  position: (index + 1).toString(),
                                   team: team,
                                   ranking: index + 1,
                                   score: score,

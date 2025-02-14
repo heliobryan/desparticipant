@@ -10,8 +10,8 @@ class AvaliatonButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 300,
-      height: 100,
+      width: MediaQuery.of(context).size.width * 0.75, // Largura ajustada
+      height: MediaQuery.of(context).size.height * 0.12, // Altura ajustada
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
@@ -26,34 +26,41 @@ class AvaliatonButton extends StatelessWidget {
         },
         child: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.assignment,
               color: Colors.white,
-              size: 50,
+              size: MediaQuery.of(context).size.width * 0.12, // Ícone ajustado
             ),
-            const SizedBox(width: 20),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                Text(
-                  'AVALIAÇÕES',
-                  style:
-                      principalFont.medium(color: Colors.white, fontSize: 20),
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  width: 155,
-                  height: 30,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  child: Text(
-                    'VEJA SEUS RESULTADOS',
-                    style:
-                        principalFont.medium(color: Colors.white, fontSize: 10),
+            SizedBox(
+                width: MediaQuery.of(context).size.width *
+                    0.05), // Espaçamento entre ícone e texto
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Alinhamento à esquerda
+                children: [
+                  Text(
+                    'AVALIAÇÕES',
+                    style: principalFont.medium(
+                      color: Colors.white,
+                      fontSize: MediaQuery.of(context).size.width *
+                          0.05, // Tamanho ajustado para o título
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height *
+                          0.005), // Espaçamento ajustado
+                  Text(
+                    'VEJA SEUS RESULTADOS',
+                    style: principalFont.medium(
+                      color: Colors.white,
+                      fontSize: MediaQuery.of(context).size.width *
+                          0.03, // Tamanho menor para o subtítulo
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

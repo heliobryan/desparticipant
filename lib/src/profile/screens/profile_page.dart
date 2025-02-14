@@ -731,8 +731,10 @@ class _ProfilePageState extends State<ProfilePage>
                           );
                         }),
                         SizedBox(
-                          width: 300,
-                          height: 100,
+                          width: MediaQuery.of(context).size.width *
+                              0.75, // Largura ajustada
+                          height: MediaQuery.of(context).size.height *
+                              0.12, // Altura ajustada
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -743,34 +745,48 @@ class _ProfilePageState extends State<ProfilePage>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.badge,
                                   color: Colors.white,
-                                  size: 50,
+                                  size: MediaQuery.of(context).size.width *
+                                      0.12, // Ícone ajustado
                                 ),
-                                const SizedBox(width: 20),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      'CARD',
-                                      style: principalFont.medium(
-                                          color: Colors.white, fontSize: 35),
-                                    ),
-                                    Container(
-                                      width: 145,
-                                      height: 30,
-                                      decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(12))),
-                                      child: Text(
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05), // Espaçamento entre ícone e texto
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start, // Alinhamento para o início
+                                    children: [
+                                      Text(
+                                        'CARD',
+                                        style: principalFont.medium(
+                                          color: Colors.white,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.09, // Tamanho ajustado para o título
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.00), // Espaçamento ajustado
+                                      Text(
                                         'VEJA SUA PONTUAÇÃO',
                                         style: principalFont.medium(
-                                            color: Colors.white, fontSize: 10),
+                                          color: Colors.white,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.03, // Tamanho bem menor para o subtítulo
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

@@ -22,9 +22,17 @@ class DadosUser extends StatelessWidget {
         ? alturaDouble / ((pesoDouble / 100) * (pesoDouble / 100))
         : 0;
 
+    // Tamanho da fonte responsivo, baseado no tamanho da tela
+    double fontSize = MediaQuery.of(context).size.width * 0.05;
+    double cardWidth =
+        MediaQuery.of(context).size.width * 0.8; // Largura responsiva do card
+    double cardHeight =
+        MediaQuery.of(context).size.height * 0.4; // Altura responsiva do card
+
     return Container(
-      width: 300,
-      height: 300,
+      width: cardWidth, // Largura ajustada
+      height: cardHeight, // Altura ajustada
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF1E1E1E),
         border: Border.all(
@@ -48,22 +56,26 @@ class DadosUser extends StatelessWidget {
           const SizedBox(height: 5),
           Text(
             'DADOS BIOLÓGICOS',
-            style: principalFont.medium(color: Colors.white, fontSize: 22),
+            style:
+                principalFont.medium(color: Colors.white, fontSize: fontSize),
           ),
           const SizedBox(height: 30),
           Text(
             'PESO: $altura KG',
-            style: principalFont.medium(color: Colors.white, fontSize: 20),
+            style:
+                principalFont.medium(color: Colors.white, fontSize: fontSize),
           ),
           const SizedBox(height: 20),
           Text(
             'ALTURA: $peso CM',
-            style: principalFont.medium(color: Colors.white, fontSize: 20),
+            style:
+                principalFont.medium(color: Colors.white, fontSize: fontSize),
           ),
           const SizedBox(height: 20),
           Text(
             'IMC: ${imc.toStringAsFixed(2)}', // IMC com 2 casas decimais
-            style: principalFont.medium(color: Colors.white, fontSize: 20),
+            style:
+                principalFont.medium(color: Colors.white, fontSize: fontSize),
           ),
         ],
       ),
