@@ -22,62 +22,86 @@ class DadosUser extends StatelessWidget {
         ? alturaDouble / ((pesoDouble / 100) * (pesoDouble / 100))
         : 0;
 
-    // Tamanho da fonte responsivo, baseado no tamanho da tela
+    String nivelIMC() {
+      if (imc < 18.5) {
+        return "Abaixo do peso";
+      } else if (imc >= 18.5 && imc < 24.9) {
+        return "Peso normal";
+      } else if (imc >= 25 && imc < 29.9) {
+        return "Sobrepeso";
+      } else if (imc >= 30 && imc < 34.9) {
+        return "Obesidade Grau I";
+      } else if (imc >= 35 && imc < 39.9) {
+        return "Obesidade Grau II";
+      } else {
+        return "Obesidade Grau III";
+      }
+    }
+
     double fontSize = MediaQuery.of(context).size.width * 0.05;
-    double cardWidth =
-        MediaQuery.of(context).size.width * 0.8; // Largura responsiva do card
+    double cardWidth = MediaQuery.of(context).size.width * 0.8;
     double cardHeight =
-        MediaQuery.of(context).size.height * 0.4; // Altura responsiva do card
+        MediaQuery.of(context).size.height * 0.5; // Aumentei um pouco a altura
 
     return Container(
-      width: cardWidth, // Largura ajustada
-      height: cardHeight, // Altura ajustada
+      width: cardWidth,
+      height: cardHeight,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
-        border: Border.all(
-          color: Colors.white,
-        ),
-        borderRadius: BorderRadius.circular(12),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 48, 47, 47),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        border: Border.fromBorderSide(BorderSide(color: Colors.white)),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: const Icon(
-                Icons.close,
-                color: Colors.white,
+      child: SingleChildScrollView(
+        // Evita overflow
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: onClose,
               ),
-              onPressed: onClose,
             ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            'DADOS BIOLÓGICOS',
-            style:
-                principalFont.medium(color: Colors.white, fontSize: fontSize),
-          ),
-          const SizedBox(height: 30),
-          Text(
-            'PESO: $altura KG',
-            style:
-                principalFont.medium(color: Colors.white, fontSize: fontSize),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'ALTURA: $peso CM',
-            style:
-                principalFont.medium(color: Colors.white, fontSize: fontSize),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'IMC: ${imc.toStringAsFixed(2)}', // IMC com 2 casas decimais
-            style:
-                principalFont.medium(color: Colors.white, fontSize: fontSize),
-          ),
-        ],
+            const SizedBox(height: 5),
+            Text(
+              'DADOS BIOLÓGICOS',
+              style:
+                  principalFont.medium(color: Colors.white, fontSize: fontSize),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              'PESO: $altura KG',
+              style:
+                  principalFont.medium(color: Colors.white, fontSize: fontSize),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'ALTURA: $peso CM',
+              style:
+                  principalFont.medium(color: Colors.white, fontSize: fontSize),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'IMC: ${imc.toStringAsFixed(2)}',
+              style:
+                  principalFont.medium(color: Colors.white, fontSize: fontSize),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Classificação:',
+              style:
+                  principalFont.medium(color: Colors.white, fontSize: fontSize),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              nivelIMC(),
+              style:
+                  principalFont.medium(color: Colors.white, fontSize: fontSize),
+            ),
+          ],
+        ),
       ),
     );
   }

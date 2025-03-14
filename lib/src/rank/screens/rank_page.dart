@@ -69,6 +69,15 @@ class _RankPageState extends State<RankPage> {
           }
         });
 
+        // Filtra participantes com overall >= 1
+        participants = participants.where((p) {
+          final overall = (p['overall'] ?? 0).toDouble();
+          return overall >= 1;
+        }).toList();
+
+        // Mantém apenas os primeiros 14 participantes
+        participants = participants.take(14).toList();
+
         return participants;
       } else {
         debugPrint(
@@ -206,11 +215,9 @@ class _RankPageState extends State<RankPage> {
                             itemBuilder: (context, index) {
                               // Ordena a lista de participantes com base no overall (maior para menor)
                               filteredParticipantsList.sort((a, b) {
-                                // Verifica se o valor de 'overall' é null e atribui 0 caso seja
                                 final overallA = a['overall'] ?? 0;
                                 final overallB = b['overall'] ?? 0;
-                                return overallB.compareTo(
-                                    overallA); // Compara os valores 'overall'
+                                return overallB.compareTo(overallA);
                               });
 
                               final participant =
@@ -227,17 +234,20 @@ class _RankPageState extends State<RankPage> {
                               final category = participant['category'] ??
                                   'Categoria não disponível';
 
+                              // Define a cor da borda
                               Color borderColor;
-                              if (index == 0) {
-                                borderColor = const Color(0xFFB0E0E6);
-                              } else if (index == 1) {
-                                borderColor = const Color(0xFFFFD700);
-                              } else if (index == 2) {
-                                borderColor = const Color(0xFFC0C0C0);
-                              } else if (index == 3) {
-                                borderColor = const Color(0xFFCD7F32);
+                              if (index < 15) {
+                                borderColor = const Color(
+                                    0xFFB0E0E6); // Primeiros 15 colocados
                               } else {
-                                borderColor = const Color(0xFFC52613);
+                                // Calcula a cor proporcional para os demais
+                                final int maxIndex =
+                                    filteredParticipantsList.length - 15;
+                                final double ratio = (index - 15) / maxIndex;
+                                borderColor = Color.lerp(
+                                    const Color(0xFFC52613),
+                                    Colors.black,
+                                    ratio)!;
                               }
 
                               return Padding(

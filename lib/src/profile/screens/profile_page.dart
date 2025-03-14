@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 import 'dart:io';
 import 'package:des/src/GlobalConstants/font.dart';
@@ -236,6 +238,7 @@ class _ProfilePageState extends State<ProfilePage>
         finalScore: '',
         allEvaluations: [],
         evaId: '',
+        measurement: '',
       ),
     );
     final item17 = widget.allEvaluations.firstWhere(
@@ -247,6 +250,7 @@ class _ProfilePageState extends State<ProfilePage>
         finalScore: '',
         allEvaluations: [],
         evaId: '',
+        measurement: '',
       ),
     );
 
@@ -259,6 +263,7 @@ class _ProfilePageState extends State<ProfilePage>
         finalScore: '',
         allEvaluations: [],
         evaId: '',
+        measurement: '',
       ),
     );
     final item54 = widget.allEvaluations.firstWhere(
@@ -270,6 +275,7 @@ class _ProfilePageState extends State<ProfilePage>
         finalScore: '',
         allEvaluations: [],
         evaId: '',
+        measurement: '',
       ),
     );
 
@@ -375,19 +381,22 @@ class _ProfilePageState extends State<ProfilePage>
     };
 
     final agiValue = resultsMap[61] ?? '';
-    final pesoValue = resultsMap[16] ?? '';
-    final alturaValue = resultsMap[17] ?? '';
+    final pesoValue = resultsMap[17] ?? '';
+    final alturaValue = resultsMap[16] ?? '';
     final embaixaValue = resultsMap[41] ?? '';
-    final finalValue = resultsMap[55] ?? '';
+    final finValue = resultsMap[107] ?? '';
     final passValue = resultsMap[54] ?? '';
+    final pass2Value = resultsMap[35] ?? '';
     final driValue = resultsMap[59] ?? '';
+    final fin2Value = resultsMap[108] ?? '';
 
     debugPrint("Toggle Player Card:");
     debugPrint("Agilidade (item 61): $agiValue");
     debugPrint("Peso (item 16): $pesoValue");
     debugPrint("Altura (item 17): $alturaValue");
     debugPrint("Embaixadinha (item 41): $embaixaValue");
-    debugPrint("Finalização (item 55): $finalValue");
+    debugPrint("Finalização (item 55): $finValue");
+    debugPrint("Finalização (item 55): $fin2Value");
     debugPrint("Passe (item 54): $passValue");
     debugPrint("Drible (item 59): $driValue");
     debugPrint("Username: $currentUserName, Position: $currentPosition");
@@ -412,12 +421,14 @@ class _ProfilePageState extends State<ProfilePage>
               pesoValue: pesoValue,
               alturaValue: alturaValue,
               embaixaValue: embaixaValue,
-              finalValue: finalValue,
+              finalValue: finValue,
               passValue: passValue,
               driValue: driValue,
               userName: currentUserName,
               position: currentPosition,
               userImagePath: userImagePath,
+              passValue2: pass2Value,
+              final2Value: fin2Value,
             ),
           ),
         );
@@ -599,7 +610,7 @@ class _ProfilePageState extends State<ProfilePage>
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: const Color(0XFF1E1E1E),
+        backgroundColor: const Color(0XFFb0c32e),
         actions: [
           IconButton(
             icon: const Icon(
@@ -614,7 +625,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         ],
         title: Text(
-          'BEM VINDO $userName',
+          'BEM VINDO $userName'.toUpperCase(),
           style: principalFont.medium(color: Colors.white, fontSize: 20),
         ),
         centerTitle: false,
@@ -724,9 +735,12 @@ class _ProfilePageState extends State<ProfilePage>
                                         itemId: j['item']['id'] ?? 0,
                                         allEvaluations: const [],
                                         evaId: '',
+                                        measurement: j['item']
+                                            ['measurement_unit'],
                                       ))
                                   .toList(),
                               evaId: '',
+                              measurement: judgment['item']['measurement_unit'],
                             ),
                           );
                         }),
@@ -737,6 +751,7 @@ class _ProfilePageState extends State<ProfilePage>
                               0.12, // Altura ajustada
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: Colors.white),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

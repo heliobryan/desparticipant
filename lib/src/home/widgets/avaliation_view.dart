@@ -7,6 +7,7 @@ class AvaliationView extends StatelessWidget {
   final String finalScore;
   final int? itemId;
   final List<AvaliationView> allEvaluations;
+  final String? measurement;
   final String evaId;
 
   const AvaliationView({
@@ -17,6 +18,7 @@ class AvaliationView extends StatelessWidget {
     this.itemId,
     required this.allEvaluations,
     required this.evaId,
+    required this.measurement,
   });
 
   String calculateFinalScore(int? itemId, double score) {
@@ -133,9 +135,20 @@ class AvaliationView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            Text(
-              evaluationName,
-              style: principalFont.medium(color: Colors.white, fontSize: 20),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Center(
+                  child: Text(
+                    evaluationName,
+                    textAlign: TextAlign.center,
+                    style: principalFont.medium(
+                      color: Colors.white,
+                      fontSize: constraints.maxWidth *
+                          0.05, // Responsivo ao tamanho do card
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
             Text(
@@ -143,7 +156,7 @@ class AvaliationView extends StatelessWidget {
               style: principalFont.medium(color: Colors.white),
             ),
             Text(
-              result,
+              "$result $measurement",
               style: principalFont.medium(color: Colors.white),
             ),
             const SizedBox(height: 20),

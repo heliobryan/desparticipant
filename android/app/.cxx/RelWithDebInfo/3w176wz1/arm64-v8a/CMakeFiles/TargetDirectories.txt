@@ -1,0 +1,2 @@
+/home/rei-do-mines/desparticipant-1/android/app/.cxx/RelWithDebInfo/3w176wz1/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/rei-do-mines/desparticipant-1/android/app/.cxx/RelWithDebInfo/3w176wz1/arm64-v8a/CMakeFiles/rebuild_cache.dir

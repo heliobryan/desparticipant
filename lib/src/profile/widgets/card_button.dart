@@ -20,6 +20,9 @@ class _CardButtonState extends State<CardButton> {
             style: OutlinedButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
+                border: Border.fromBorderSide(
+                  BorderSide(color: Colors.white),
+                ),
               ),
             ),
             onPressed: () {
@@ -69,6 +72,8 @@ class _CardButtonState extends State<CardButton> {
                                 userName: '',
                                 position: '',
                                 userImagePath: '',
+                                passValue2: '',
+                                final2Value: '',
                               ),
                               Positioned(
                                 top: 20,

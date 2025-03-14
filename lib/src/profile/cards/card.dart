@@ -11,12 +11,15 @@ class PlayerCard extends StatefulWidget {
   final String pesoValue;
   final String alturaValue;
   final String finalValue;
+  final String final2Value;
+
   final String embaixaValue;
   final String passValue;
   final String driValue;
   final String userName;
   final String position;
   final String userImagePath;
+  final String passValue2;
 
   const PlayerCard({
     super.key,
@@ -30,6 +33,8 @@ class PlayerCard extends StatefulWidget {
     required this.userName,
     required this.position,
     required this.userImagePath,
+    required this.passValue2,
+    required this.final2Value,
   });
 
   @override
@@ -160,7 +165,7 @@ class _PlayerCardstate extends State<PlayerCard> {
           return '60';
         } else if (score > 60 && score <= 70) {
           return '80';
-        } else if (score > 70 && score <= 80) {
+        } else if (score > 70 && score <= 99) {
           return '90';
         } else if (score > 100) {
           final proportionalScore = 100 - ((score - 100) / (120 - 100) * 20);
@@ -168,10 +173,18 @@ class _PlayerCardstate extends State<PlayerCard> {
         }
         break;
 
-      case 54:
-      case 55:
-      case 56:
+      case 107:
+        int finalScore = (score * 5 / 2).toInt();
+        return finalScore > 100 ? '100' : finalScore.toString();
+      case 108:
+        int finalScore = (score * 5 / 2).toInt();
+        return finalScore > 100 ? '100' : finalScore.toString();
+
       case 35:
+      case 54:
+        return (score * 5).toInt().toString();
+
+      case 56:
         return (score * 10).toInt().toString();
 
       default:
@@ -185,60 +198,87 @@ class _PlayerCardstate extends State<PlayerCard> {
   Widget build(BuildContext context) {
     double agiNumeric = double.tryParse(widget.agiValue) ?? 0;
     double fisNumeric = double.tryParse(widget.alturaValue) ?? 0;
+    double fisNumeric2 = double.tryParse(widget.pesoValue) ?? 0;
     double finNumeric = double.tryParse(widget.finalValue) ?? 0;
     double pasNumeric = double.tryParse(widget.passValue) ?? 0;
+    double pas2Numeric = double.tryParse(widget.passValue2) ?? 0;
+    double fin2Numeric = double.tryParse(widget.final2Value) ?? 0;
     double driNumeric = double.tryParse(widget.driValue) ?? 0;
+    double ritNumeric = double.tryParse(widget.embaixaValue) ?? 0;
 
     log('pas Numeric: $pasNumeric');
+    log('pas2 Numeric: $pas2Numeric');
     log('dri numeric: $driNumeric');
     log('fin numeric: $finNumeric');
+    log('fin numeric: $fin2Numeric');
     log('fis numeric: $fisNumeric');
     log('agi numeric: $agiNumeric');
 
     String calculatedAgi = calculateFinalScore(61, agiNumeric);
     String calculatedFis = calculateFinalScore(16, fisNumeric);
-    String calculatedRit = calculateFinalScore(41, fisNumeric);
-    String calculatedFin = calculateFinalScore(55, finNumeric);
+    String calculatedFis2 = calculateFinalScore(17, fisNumeric);
+    String calculatedRit = calculateFinalScore(41, ritNumeric);
+    String calculatedFin = calculateFinalScore(107, finNumeric);
+    String calculatedFin2 = calculateFinalScore(108, fin2Numeric);
     String calculatedPas = calculateFinalScore(54, pasNumeric);
+    String calculatedPas2 = calculateFinalScore(35, pas2Numeric);
     String calculatedDri = calculateFinalScore(59, driNumeric);
 
     int agi = int.tryParse(calculatedAgi) ?? 0;
     int fis = int.tryParse(calculatedFis) ?? 0;
+    int fis2 = int.tryParse(calculatedFis2) ?? 0;
     int rit = int.tryParse(calculatedRit) ?? 0;
     int fin = int.tryParse(calculatedFin) ?? 0;
+    int fin2 = int.tryParse(calculatedFin2) ?? 0;
     int pas = int.tryParse(calculatedPas) ?? 0;
+    int pas2 = int.tryParse(calculatedPas2) ?? 0;
     int dri = int.tryParse(calculatedDri) ?? 0;
+    int passe = ((pas + pas2)).toInt();
+    int fiu = ((fin + fin2) / 2).toInt();
 
-    int average = ((agi + fis + rit + fin + pas + dri) / 6).toInt();
+    double calculateAverageScore(
+      int itemId1,
+      double score1,
+      int itemId2,
+      double score2,
+    ) {
+      return ((double.tryParse(calculateFinalScore(itemId1, score1)) ?? 0.0) +
+              (double.tryParse(calculateFinalScore(itemId2, score2)) ?? 0.0)) /
+          2.0;
+    }
+
+    String fiscore = calculateAverageScore(17, fisNumeric2, 16, fisNumeric)
+        .toStringAsFixed(0);
+    int average = ((agi + fis2 + fis + rit + fiu + passe + dri) / 6).toInt();
+    Color getAverageColor(int average) {
+      if (average <= 70) {
+        return const Color(0xFFC52613); // Vermelho
+      } else if (average <= 79) {
+        return const Color(0xFFCD7F32); // Bronze
+      } else if (average <= 85) {
+        return const Color(0xFFC0C0C0); // Prata
+      } else if (average <= 94) {
+        return const Color(0xFFFFD700); // Ouro
+      } else {
+        return const Color(0xFFB9F2FF); // Azul claro
+      }
+    }
+
+    Color cardColor = getAverageColor(average);
 
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFFC0C0C0),
+            cardColor, //ESSA COR
             Color(0xFF1E1E1E),
             Color(0xFF1E1E1E),
           ],
         ),
         borderRadius: const BorderRadius.all(Radius.circular(50)),
-        boxShadow: [
-          // BoxShadow(
-          //   // ignore: deprecated_member_use
-          //   color: Color(0xFFC0C0C0),
-          //   spreadRadius: -8,
-          //   blurRadius: 10,
-          //   offset: const Offset(0, 0),
-          // ),
-          // BoxShadow(
-          //   // ignore: deprecated_member_use
-          //   color: Color(0xFFC0C0C0),
-          //   spreadRadius: 12,
-          //   blurRadius: 25,
-          //   offset: const Offset(0, 0),
-          // ),
-        ],
+        boxShadow: [],
       ),
       width: 400,
       height: 700,
@@ -246,7 +286,7 @@ class _PlayerCardstate extends State<PlayerCard> {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: const Color(0xFFC0C0C0),
+              color: cardColor,
               width: 1,
             ),
             borderRadius: const BorderRadius.all(Radius.circular(46)),
@@ -321,10 +361,6 @@ class _PlayerCardstate extends State<PlayerCard> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Image.asset(
-                          'assets/images/flamengo.png',
-                          scale: 20,
-                        )
                       ],
                     ),
                   ],
@@ -360,12 +396,12 @@ class _PlayerCardstate extends State<PlayerCard> {
                               color: Colors.white, fontSize: 25),
                         ),
                         Text(
-                          '$calculatedFin FIN', //FINALIZAÇÃO
+                          '$fiu FIN', //FINALIZAÇÃO
                           style: principalFont.medium(
                               color: Colors.white, fontSize: 25),
                         ),
                         Text(
-                          '$calculatedPas PAS', //PASSE
+                          '$passe PAS', //PASSE
                           style: principalFont.medium(
                               color: Colors.white, fontSize: 25),
                         ),
@@ -394,7 +430,7 @@ class _PlayerCardstate extends State<PlayerCard> {
                               color: Colors.white, fontSize: 25),
                         ),
                         Text(
-                          '$calculatedFis FIS', //FISICO
+                          '$fiscore FIS', //FISICO
                           style: principalFont.medium(
                               color: Colors.white, fontSize: 25),
                         ),
@@ -410,7 +446,7 @@ class _PlayerCardstate extends State<PlayerCard> {
                       fis.toDouble(),
                       rit.toDouble(),
                       fin.toDouble(),
-                      pas.toDouble(),
+                      passe.toDouble(),
                       dri.toDouble()
                     ]
                   ],

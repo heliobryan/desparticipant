@@ -166,6 +166,9 @@ class _AlternateHomeState extends State<AlternateHome> {
                                   itemId: judgment['item']['id'],
                                   allEvaluations: const [],
                                   evaId: '',
+                                  measurement: judgment['item']
+                                          ['measurement_unit'] ??
+                                      '',
                                 ),
                                 const SizedBox(height: 30),
                               ],

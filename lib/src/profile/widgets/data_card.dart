@@ -10,12 +10,21 @@ class DataCard extends StatelessWidget {
     return Stack(
       children: [
         Center(
-          child: SizedBox(
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
+              border: Border.fromBorderSide(
+                BorderSide(color: Colors.white),
+              ),
+            ),
             width: MediaQuery.of(context).size.width * 0.75, // Largura ajustada
             height:
                 MediaQuery.of(context).size.height * 0.12, // Altura ajustada
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
+                side: BorderSide(color: Colors.white),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
