@@ -15,16 +15,13 @@ class DataCard extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(12),
               ),
-              border: Border.fromBorderSide(
-                BorderSide(color: Colors.white),
-              ),
             ),
             width: MediaQuery.of(context).size.width * 0.75, // Largura ajustada
             height:
                 MediaQuery.of(context).size.height * 0.12, // Altura ajustada
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.white),
+                side: BorderSide(color: Color(0XFFb0c32e)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

@@ -14,7 +14,7 @@ class AvaliatonButton extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.12, // Altura ajustada
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: Colors.white),
+          side: BorderSide(color: Color(0XFFb0c32e)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

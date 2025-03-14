@@ -50,7 +50,9 @@ class DadosUser extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color.fromARGB(255, 48, 47, 47),
         borderRadius: BorderRadius.all(Radius.circular(12)),
-        border: Border.fromBorderSide(BorderSide(color: Colors.white)),
+        border: Border.fromBorderSide(BorderSide(
+          color: Color(0XFFb0c32e),
+        )),
       ),
       child: SingleChildScrollView(
         // Evita overflow

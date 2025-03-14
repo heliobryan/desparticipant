@@ -68,7 +68,7 @@ class _FilterRankState extends State<FilterRank> {
       height: 50,
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0XffB0B0B0),
+          color: Color(0XFFb0c32e),
         ),
       ),
       child: OutlinedButton(

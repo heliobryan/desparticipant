@@ -111,7 +111,7 @@ class _AlternateHomeState extends State<AlternateHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: const Color(0XFFb0c32e),
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(

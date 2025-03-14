@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         child: NavigationBar(
-          backgroundColor: const Color(0XFF1E1E1E),
+          backgroundColor: const Color(0XFFb0c32e),
           onDestinationSelected: (int index) {
             _navigateToPage(index);
           },

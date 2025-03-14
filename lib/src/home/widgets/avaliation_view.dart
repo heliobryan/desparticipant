@@ -125,7 +125,9 @@ class AvaliationView extends StatelessWidget {
       width: 320,
       height: 250,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
+        border: Border.all(
+          color: const Color(0XFFb0c32e),
+        ),
         borderRadius: const BorderRadius.all(
           Radius.circular(12),
         ),
@@ -169,7 +171,9 @@ class AvaliationView extends StatelessWidget {
               width: 80,
               height: 40,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
+                border: Border.all(
+                  color: const Color(0XFFb0c32e),
+                ),
                 borderRadius: const BorderRadius.all(
                   Radius.circular(12),
                 ),

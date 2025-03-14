@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:des/src/GlobalConstants/images.dart';
 import 'package:des/src/home/controller/home_controller.dart';
 import 'package:des/src/login/screens/login_screen.dart';
@@ -113,13 +115,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 children: [
                   SvgPicture.asset(
                     Assets.logoDes,
-                    width: 200,
+                    width: 400,
+                    height: 400,
+                    color: const Color(0XFFb0c32e),
                   ),
                   const SizedBox(height: 50),
-                  SvgPicture.asset(
-                    Assets.nameDes,
-                    width: 270,
-                  ),
                 ],
               ),
             ),

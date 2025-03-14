@@ -1,8 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_field, unused_local_variable
 
 import 'dart:developer';
 import 'dart:io';
 import 'package:des/src/GlobalConstants/font.dart';
+import 'package:des/src/GlobalConstants/images.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
 import 'package:des/src/profile/cards/card.dart';
@@ -624,9 +625,10 @@ class _ProfilePageState extends State<ProfilePage>
             ),
           ),
         ],
-        title: Text(
-          'BEM VINDO $userName'.toUpperCase(),
-          style: principalFont.medium(color: Colors.white, fontSize: 20),
+        title: Image.asset(
+          Assets.homelogo,
+          width: 200,
+          color: Colors.white,
         ),
         centerTitle: false,
       ),
@@ -646,7 +648,7 @@ class _ProfilePageState extends State<ProfilePage>
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Colors.white,
+                          color: Color(0XFFb0c32e),
                           width: 4,
                         ),
                       ),
@@ -663,7 +665,7 @@ class _ProfilePageState extends State<ProfilePage>
                             ? const Icon(
                                 Icons.account_circle_outlined,
                                 size: 120,
-                                color: Colors.grey,
+                                color: Colors.white,
                               )
                             : null,
                       ),
@@ -751,7 +753,7 @@ class _ProfilePageState extends State<ProfilePage>
                               0.12, // Altura ajustada
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.white),
+                              side: BorderSide(color: Color(0XFFb0c32e)),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

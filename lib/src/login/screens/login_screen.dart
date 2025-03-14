@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, unused_local_variable, avoid_print
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, unused_local_variable, avoid_print, deprecated_member_use
 import 'package:des/src/home/controller/home_controller.dart';
 import 'package:des/src/login/services/login_service.dart';
 import 'package:des/src/GlobalConstants/font.dart';
@@ -134,10 +134,14 @@ class _LoginScreenState extends State<LoginScreen>
                   position: _logoSlide,
                   child: FadeTransition(
                     opacity: _logoOpacity,
-                    child: SvgPicture.asset(Assets.logoDes),
+                    child: SvgPicture.asset(
+                      Assets.logoDes,
+                      width: 400,
+                      height: 400,
+                      color: const Color(0XFFb0c32e),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 80),
                 FadeTransition(
                   opacity: _formOpacity,
                   child: SlideTransition(
@@ -145,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen>
                     child: Text(
                       'FAÇA SEU LOGIN',
                       style: principalFont.bold(
-                        color: Colors.white,
+                        color: const Color(0XFFb0c32e),
                         fontSize: 30,
                       ),
                     ),
@@ -154,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen>
                 const SizedBox(height: 20),
                 Center(
                   child: SizedBox(
-                    width: 300,
+                    width: 340,
                     child: Column(
                       children: [
                         FadeTransition(
@@ -256,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen>
                           child: SlideTransition(
                             position: _formSlide,
                             child: SizedBox(
-                              width: 300,
+                              width: 350,
                               height: 50,
                               child: OutlinedButton(
                                 style: OutlinedButton.styleFrom(

@@ -31,7 +31,7 @@ class RankCard extends StatelessWidget {
             width: 4,
           ),
           top: const BorderSide(color: Color(0xFF3C3C3C), width: 2),
-          right: const BorderSide(color: Color(0xFF3C3C3C), width: 2),
+          right: const BorderSide(color: Color(0XFFb0c32e), width: 1),
           bottom: const BorderSide(color: Color(0xFF3C3C3C), width: 2),
         ),
         color: const Color(0xFF2C2C2C),
@@ -121,7 +121,7 @@ class RankCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0XffB0B0B0), width: 2),
+                border: Border.all(color: const Color(0XFFb0c32e), width: 2),
               ),
               child: Center(
                 child: Text(

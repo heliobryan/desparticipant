@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:convert';
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
@@ -145,7 +147,7 @@ class _RankPageState extends State<RankPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: const Color(0XFF1E1E1E),
+        backgroundColor: const Color(0XFFb0c32e),
         actions: [
           IconButton(
             icon: const Icon(
