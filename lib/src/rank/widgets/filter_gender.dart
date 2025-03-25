@@ -12,9 +12,13 @@ class _FilterGenderState extends State<FilterGender> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 120,
-      height: 50,
+      width: 150,
+      height: 40,
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
         border: Border.all(
           color: const Color(0XFFb0c32e),
         ),
@@ -26,7 +30,7 @@ class _FilterGenderState extends State<FilterGender> {
         child: Icon(
           isHomem ? Icons.male : Icons.female,
           size: 40,
-          color: const Color(0XffB0B0B0),
+          color: const Color(0XFFb0c32e),
         ),
         onPressed: () {
           setState(() {

@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_final_fields
+import 'package:des/src/profile/screens/datauser_page.dart';
 import 'package:des/src/profile/screens/profile_page.dart';
 import 'package:des/src/rank/screens/rank_page.dart';
 import 'package:des/src/marketplace/screens/market_page.dart';
@@ -40,54 +41,86 @@ class _HomePageState extends State<HomePage> {
         children: _screens,
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
-      backgroundColor: const Color(0xFF2A0C55),
+      backgroundColor: Color(0XFFA6B92E),
     );
   }
 
   Widget _buildBottomNavigationBar() {
     return Container(
-      height: 56,
+      height: 75,
       decoration: const BoxDecoration(),
-      child: NavigationBarTheme(
-        data: const NavigationBarThemeData(
-          indicatorColor: Colors.transparent,
-          overlayColor: WidgetStatePropertyAll(Colors.transparent),
-          labelTextStyle: WidgetStatePropertyAll(
-            TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'OUTFIT',
-              color: Colors.white,
-            ),
+      child: Row(
+        children: [
+          _buildExpandedSquareButton(
+            icon: Icons.account_circle_outlined,
+            label: 'Perfil',
+            isSelected: currentPageIndex == 0,
+            onTap: () => _navigateToPage(0),
           ),
-          iconTheme: WidgetStatePropertyAll(
-            IconThemeData(
-              color: Colors.white,
-              size: 24,
-            ),
+          _buildVerticalDivider(),
+          _buildExpandedSquareButton(
+            icon: Icons.emoji_events,
+            label: 'Ranking',
+            isSelected: currentPageIndex == 1,
+            onTap: () => _navigateToPage(1),
           ),
-        ),
-        child: NavigationBar(
-          backgroundColor: const Color(0XFFb0c32e),
-          onDestinationSelected: (int index) {
-            _navigateToPage(index);
-          },
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.account_circle_outlined),
-              label: 'Perfil',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.emoji_events),
-              label: 'Ranking',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.store),
-              label: 'Loja',
-            ),
-          ],
+          _buildVerticalDivider(),
+          _buildExpandedSquareButton(
+            icon: Icons.store,
+            label: 'Loja',
+            isSelected: currentPageIndex == 2,
+            onTap: () => _navigateToPage(2),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpandedSquareButton({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          constraints: const BoxConstraints
+              .expand(), // Expande para ocupar todo o espaço
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.black : const Color(0XFFA6B92E),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.black,
+                size: 45,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OUTFIT',
+                  color: isSelected ? Colors.white : Colors.black,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildVerticalDivider() {
+    return Container(
+      width: 2, // Largura da linha
+      color: Colors.black,
+      margin: const EdgeInsets.symmetric(vertical: 0),
     );
   }
 

@@ -12,7 +12,6 @@ class PlayerCard extends StatefulWidget {
   final String alturaValue;
   final String finalValue;
   final String final2Value;
-
   final String embaixaValue;
   final String passValue;
   final String driValue;

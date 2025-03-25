@@ -81,6 +81,10 @@ flutter:
     - assets/images/namedes.svg
     - assets/images/des.png
     - assets/images/homelogo.png
+    - assets/images/sportdes.png
+    - assets/images/background.png
+    - assets/images/background1.png
+    - assets/images/title.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -97,7 +101,7 @@ flutter:
   fonts:
     - family: STRETCH
       fonts:
-        - asset: fonts/stretch.ttf
+        - asset: fonts/stretch.otf
           style: italic
     - family: OUTFIT
       fonts:

@@ -1,0 +1,2 @@
+/home/rei-do-mines/desparticipant-4/android/app/.cxx/Debug/50615w4m/x86/CMakeFiles/edit_cache.dir
+/home/rei-do-mines/desparticipant-4/android/app/.cxx/Debug/50615w4m/x86/CMakeFiles/rebuild_cache.dir

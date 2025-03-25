@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/home/rei-do-mines/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/rei-do-mines/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/rei-do-mines/desparticipant-4/android/app/.cxx/RelWithDebInfo/4y3p356q/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/rei-do-mines/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/rei-do-mines/desparticipant-4/android/app/.cxx/RelWithDebInfo/4y3p356q/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

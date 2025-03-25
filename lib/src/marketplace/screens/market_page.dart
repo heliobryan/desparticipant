@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:des/src/GlobalConstants/font.dart';
+import 'package:des/src/GlobalConstants/images.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,12 +33,12 @@ class _MarketPageState extends State<MarketPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: const Color(0XFFb0c32e),
+        toolbarHeight: 75,
+        backgroundColor: const Color(0XFFA6B92E),
         actions: [
           IconButton(
             icon: const Icon(
-              Icons.exit_to_app_outlined,
+              Icons.exit_to_app_rounded,
               color: Colors.white,
               size: 30,
             ),
@@ -45,10 +48,24 @@ class _MarketPageState extends State<MarketPage> {
             ),
           ),
         ],
-        title: Text(
-          'LOJA',
-          style: principalFont.medium(color: Colors.white, fontSize: 20),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              colors: [
+                Colors.black,
+                Color(0xFF42472B).withOpacity(0.5),
+              ],
+            ),
+          ),
         ),
+        title: Image.asset(
+          Assets.homelogo,
+          width: 250,
+          color: Colors.white,
+        ),
+        centerTitle: true,
       ),
       backgroundColor: const Color(0xFF121212),
       body: Center(
@@ -65,7 +82,7 @@ class _MarketPageState extends State<MarketPage> {
                 ),
               ),
               child: IconButton(
-                onPressed: _launchURL, // Chama a função para abrir a URL
+                onPressed: _launchURL,
                 icon: const Icon(
                   Icons.store_outlined,
                   size: 100,

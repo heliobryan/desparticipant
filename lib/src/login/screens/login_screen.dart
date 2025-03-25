@@ -122,176 +122,222 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 80),
-                SlideTransition(
-                  position: _logoSlide,
-                  child: FadeTransition(
-                    opacity: _logoOpacity,
-                    child: SvgPicture.asset(
-                      Assets.logoDes,
-                      width: 400,
-                      height: 400,
-                      color: const Color(0XFFb0c32e),
-                    ),
-                  ),
+      resizeToAvoidBottomInset: false, // Desativa o ajuste do teclado
+      body: Stack(
+        children: [
+          // Fundo fixo
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(Assets.background),
+                  fit: BoxFit.cover,
                 ),
-                FadeTransition(
-                  opacity: _formOpacity,
-                  child: SlideTransition(
-                    position: _formSlide,
-                    child: Text(
-                      'FAÇA SEU LOGIN',
-                      style: principalFont.bold(
-                        color: const Color(0XFFb0c32e),
-                        fontSize: 30,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: SizedBox(
-                    width: 340,
+              ),
+            ),
+          ),
+          // Conteúdo da tela
+          SingleChildScrollView(
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Stack(children: [
+                  Center(
                     child: Column(
                       children: [
-                        FadeTransition(
-                          opacity: _formOpacity,
-                          child: SlideTransition(
-                            position: _formSlide,
-                            child: TextFormField(
-                              controller: _emailController,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OUTFIT',
-                                fontWeight: FontWeight.bold,
-                              ),
-                              validator: (String? value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Email Inválido';
-                                }
-                                if (value.length < 5) {
-                                  return 'Email muito curto';
-                                }
-                                if (!value.contains('@')) {
-                                  return 'Email Inválido';
-                                }
-                                if (!value.contains('.com')) {
-                                  return 'Email Inválido';
-                                }
-                                return null;
-                              },
-                              decoration: emailAuthDecoration('USUÁRIO'),
+                        const SizedBox(height: 160),
+                        SlideTransition(
+                          position: _logoSlide,
+                          child: FadeTransition(
+                            opacity: _logoOpacity,
+                            child: Image.asset(
+                              Assets.sportdes,
+                              width: 400,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 60),
                         FadeTransition(
                           opacity: _formOpacity,
                           child: SlideTransition(
                             position: _formSlide,
-                            child: TextFormField(
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OUTFIT',
-                                fontWeight: FontWeight.bold,
-                              ),
-                              controller: _passwordController,
-                              obscureText: showPass,
-                              validator: (String? pass) {
-                                if (pass == null || pass.isEmpty) {
-                                  return 'Senha Inválida';
-                                }
-                                if (pass.length < 5) {
-                                  return 'Senha muito curta';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'SENHA',
-                                fillColor: const Color(0xFF282E36),
-                                filled: true,
-                                contentPadding: const EdgeInsets.all(12),
-                                prefixIcon: const Icon(
-                                  Icons.lock_outline,
-                                  color: Color(0xFF484D54),
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    showPass
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                    color: const Color(0xFF484D54),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      showPass = !showPass;
-                                    });
-                                  },
-                                ),
-                                hintStyle: const TextStyle(
-                                  color: Color(0xFF666F7B),
-                                  fontFamily: 'OUTFIT',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFF464C54),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        FadeTransition(
-                          opacity: _formOpacity,
-                          child: SlideTransition(
-                            position: _formSlide,
-                            child: SizedBox(
-                              width: 350,
-                              height: 50,
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                      color: Color(0xFF464C54)),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  backgroundColor: const Color(0xFF282E36),
-                                ),
-                                onPressed: _handleLogin,
-                                child: isLoading
-                                    ? CircularProgressIndicator(
-                                        color: Colors.white,
-                                      )
-                                    : Text(
-                                        'ENTRAR',
-                                        style: principalFont.medium(
-                                            color: Colors.white, fontSize: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text.rich(
+                                  TextSpan(
+                                    text: 'Faça seu',
+                                    style: principalFont.bold(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: ' login',
+                                        style: principalFont.bold(
+                                          color: const Color(0XFFb0c32e),
+                                          fontSize: 30,
+                                        ),
                                       ),
-                              ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        Center(
+                          child: SizedBox(
+                            width: 340,
+                            child: Column(
+                              children: [
+                                FadeTransition(
+                                  opacity: _formOpacity,
+                                  child: SlideTransition(
+                                    position: _formSlide,
+                                    child: TextFormField(
+                                      controller: _emailController,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'OUTFIT',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      validator: (String? value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Email Inválido';
+                                        }
+                                        if (value.length < 5) {
+                                          return 'Email muito curto';
+                                        }
+                                        if (!value.contains('@')) {
+                                          return 'Email Inválido';
+                                        }
+                                        if (!value.contains('.com')) {
+                                          return 'Email Inválido';
+                                        }
+                                        return null;
+                                      },
+                                      decoration:
+                                          emailAuthDecoration('USUÁRIO'),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                FadeTransition(
+                                  opacity: _formOpacity,
+                                  child: SlideTransition(
+                                    position: _formSlide,
+                                    child: TextFormField(
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'OUTFIT',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      controller: _passwordController,
+                                      obscureText: showPass,
+                                      validator: (String? pass) {
+                                        if (pass == null || pass.isEmpty) {
+                                          return 'Senha Inválida';
+                                        }
+                                        if (pass.length < 5) {
+                                          return 'Senha muito curta';
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: 'SENHA',
+                                        fillColor:
+                                            Color(0xFF282E36).withOpacity(0.5),
+                                        filled: true,
+                                        contentPadding:
+                                            const EdgeInsets.all(12),
+                                        prefixIcon: const Icon(
+                                          Icons.lock_outline,
+                                          color: Color(0XFFb0c32e),
+                                        ),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            showPass
+                                                ? Icons.visibility_outlined
+                                                : Icons.visibility_off_outlined,
+                                            color: const Color(0XFFb0c32e),
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              showPass = !showPass;
+                                            });
+                                          },
+                                        ),
+                                        hintStyle: const TextStyle(
+                                          color: Color(0xFF666F7B),
+                                          fontFamily: 'OUTFIT',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            color: Color(0XFFb0c32e),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 60),
+                                FadeTransition(
+                                  opacity: _formOpacity,
+                                  child: SlideTransition(
+                                    position: _formSlide,
+                                    child: SizedBox(
+                                      width: 350,
+                                      height: 50,
+                                      child: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          side: const BorderSide(
+                                              color: Color(0xFF464C54)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12)),
+                                          backgroundColor: Colors.white,
+                                        ),
+                                        onPressed: _handleLogin,
+                                        child: isLoading
+                                            ? CircularProgressIndicator(
+                                                color: const Color.fromARGB(
+                                                    255, 58, 58, 58),
+                                              )
+                                            : Text(
+                                                'ENTRAR',
+                                                style: principalFont.medium(
+                                                  color: const Color.fromARGB(
+                                                      255, 0, 0, 0),
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 350),
+                              ],
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                ]),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

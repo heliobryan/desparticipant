@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, unused_field, unused_local_variable
+// ignore_for_file: use_build_context_synchronously, unused_field, unused_local_variable, deprecated_member_use
 
 import 'dart:developer';
 import 'dart:io';
@@ -9,7 +9,10 @@ import 'package:des/src/home/widgets/avaliation_view.dart';
 import 'package:des/src/profile/cards/card.dart';
 import 'package:des/src/profile/datauser/data_user.dart';
 import 'package:des/src/profile/graph/graph.dart';
+import 'package:des/src/profile/screens/datauser_page.dart';
 import 'package:des/src/profile/services/profile_service.dart';
+import 'package:des/src/profile/widgets/avaliation_mental.dart';
+import 'package:des/src/profile/widgets/avaliation_tatic.dart';
 import 'package:des/src/profile/widgets/data_card.dart';
 import 'package:des/src/profile/widgets/avaliation.dart';
 import 'package:flutter/material.dart';
@@ -442,6 +445,7 @@ class _ProfilePageState extends State<ProfilePage>
     final prefs = await SharedPreferences.getInstance();
     final currentUserName = userName ?? prefs.getString('userName') ?? '';
     final currentPosition = position ?? prefs.getString('position') ?? '';
+    final userImagePath = prefs.getString('userImagePath') ?? '';
 
     // Mapeando os scores de Peso (item 16) e Altura (item 17) a partir dos judgments
     final Map<int, String> resultsMap = {
@@ -461,33 +465,16 @@ class _ProfilePageState extends State<ProfilePage>
     debugPrint("Altura (item 17): $alturaValue");
     debugPrint("Username: $currentUserName, Position: $currentPosition");
 
-    if (!_isDatacard) {
-      setState(() {
-        _isDatacard = true;
-      });
-
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Center(
-            child: Material(
-              color: Colors.transparent,
-              child: DadosUser(
-                peso: pesoValue,
-                altura: alturaValue,
-                onClose: () {
-                  setState(() {
-                    _isDatacard = false;
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          );
-        },
-      );
-    }
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => DatauserPage(
+          peso: pesoValue,
+          altura: alturaValue,
+          userImagePath: userImagePath,
+          username: userName ?? '',
+        ),
+      ),
+    );
   }
 
   @override
@@ -611,72 +598,107 @@ class _ProfilePageState extends State<ProfilePage>
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: const Color(0XFFb0c32e),
+        toolbarHeight: 65,
+        backgroundColor: const Color(0XFFA6B92E),
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.exit_to_app_outlined,
-              color: Colors.white,
-              size: 30,
-            ),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (BuildContext context) => const ExitButton(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:
+                    Border.all(color: Colors.white, width: 2), // Define a borda
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.exit_to_app_rounded,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (BuildContext context) => const ExitButton(),
+                ),
+              ),
             ),
           ),
         ],
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              colors: [
+                Colors.black,
+                const Color(0xFF42472B).withOpacity(0.5),
+              ],
+            ),
+          ),
+        ),
         title: Image.asset(
           Assets.homelogo,
-          width: 200,
-          color: Colors.white,
+          width: 250,
         ),
-        centerTitle: false,
+        centerTitle: true,
       ),
       body: Stack(
         children: [
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    Assets.background1,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
                 Stack(
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: 140,
-                      height: 140,
+                      width: 190,
+                      height: 190,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Color(0XFFb0c32e),
+                          color: Colors.white,
                           width: 4,
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: _pickImage,
-                      child: CircleAvatar(
-                        radius: 65,
-                        backgroundImage: _image == null
-                            ? null
-                            : FileImage(File(_image!.path)),
-                        backgroundColor: Colors.transparent,
-                        child: _image == null
-                            ? const Icon(
-                                Icons.account_circle_outlined,
-                                size: 120,
-                                color: Colors.white,
-                              )
-                            : null,
+                      child: GestureDetector(
+                        onTap: _pickImage,
+                        child: CircleAvatar(
+                          radius: 70,
+                          backgroundImage: _image == null
+                              ? null
+                              : FileImage(File(_image!.path)),
+                          backgroundColor: Colors.transparent,
+                          child: _image == null
+                              ? const Icon(
+                                  Icons.account_circle_outlined,
+                                  size: 180, // Tamanho do ícone
+                                  color: Colors.white,
+                                )
+                              : null,
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 5),
                 Text(
                   (userName ?? 'Carregando...').toUpperCase(),
-                  style:
-                      principalFont.medium(color: Colors.white, fontSize: 30),
+                  style: secondFont.medium(color: Colors.white, fontSize: 30),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -700,7 +722,6 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
@@ -746,14 +767,14 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                           );
                         }),
-                        SizedBox(
+                        Container(
+                          color: Colors.black.withOpacity(0.2),
                           width: MediaQuery.of(context).size.width *
-                              0.75, // Largura ajustada
-                          height: MediaQuery.of(context).size.height *
-                              0.12, // Altura ajustada
+                              0.85, // Largura ajustad
+                          height: MediaQuery.of(context).size.height * 0.085,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Color(0XFFb0c32e)),
+                              side: BorderSide(color: Color(0XFFA6B92E)),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -764,7 +785,7 @@ class _ProfilePageState extends State<ProfilePage>
                               children: [
                                 Icon(
                                   Icons.badge,
-                                  color: Colors.white,
+                                  color: Color(0XFFA6B92E),
                                   size: MediaQuery.of(context).size.width *
                                       0.12, // Ícone ajustado
                                 ),
@@ -778,13 +799,13 @@ class _ProfilePageState extends State<ProfilePage>
                                         .start, // Alinhamento para o início
                                     children: [
                                       Text(
-                                        'CARD',
+                                        'Card',
                                         style: principalFont.medium(
                                           color: Colors.white,
                                           fontSize: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.09, // Tamanho ajustado para o título
+                                              0.05, // Tamanho ajustado para o título
                                         ),
                                       ),
                                       SizedBox(
@@ -793,8 +814,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                   .height *
                                               0.00), // Espaçamento ajustado
                                       Text(
-                                        'VEJA SUA PONTUAÇÃO',
-                                        style: principalFont.medium(
+                                        'Veja sua pontuação',
+                                        style: secondFont.medium(
                                           color: Colors.white,
                                           fontSize: MediaQuery.of(context)
                                                   .size
@@ -809,10 +830,14 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         DataCard(onPressed: toggleDadosUser),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         const AvaliatonButton(),
+                        const SizedBox(height: 10),
+                        AvaliationTatic(),
+                        const SizedBox(height: 10),
+                        AvaliationMental(),
                       ],
                     ),
                   ),

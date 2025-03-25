@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:flutter/material.dart';
 
@@ -11,17 +13,13 @@ class DataCard extends StatelessWidget {
       children: [
         Center(
           child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12),
-              ),
-            ),
-            width: MediaQuery.of(context).size.width * 0.75, // Largura ajustada
-            height:
-                MediaQuery.of(context).size.height * 0.12, // Altura ajustada
+            color: Colors.black.withOpacity(0.2),
+            width: MediaQuery.of(context).size.width * 0.85, // Largura ajustada
+            height: MediaQuery.of(context).size.height * 0.085,
+
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Color(0XFFb0c32e)),
+                side: BorderSide(color: Color(0XFFA6B92E)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -31,7 +29,7 @@ class DataCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.analytics,
-                    color: Colors.white,
+                    color: Color(0XFFA6B92E),
                     size: MediaQuery.of(context).size.width *
                         0.12, // Ícone ajustado
                   ),
@@ -45,19 +43,19 @@ class DataCard extends StatelessWidget {
                           CrossAxisAlignment.start, // Alinhamento à esquerda
                       children: [
                         Text(
-                          'DADOS',
+                          'Dados',
                           style: principalFont.medium(
                             color: Colors.white,
                             fontSize: MediaQuery.of(context).size.width *
-                                0.07, // Tamanho ajustado para o título
+                                0.05, // Tamanho ajustado para o título
                           ),
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height *
                                 0.005), // Espaçamento ajustado
                         Text(
-                          'ALTURA, PESO E IMC',
-                          style: principalFont.medium(
+                          'Altura, Peso e IMC',
+                          style: secondFont.medium(
                             color: Colors.white,
                             fontSize: MediaQuery.of(context).size.width *
                                 0.03, // Tamanho menor para o subtítulo

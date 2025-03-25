@@ -9,12 +9,15 @@ class AvaliatonButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.75, // Largura ajustada
-      height: MediaQuery.of(context).size.height * 0.12, // Altura ajustada
+    return Container(
+      // ignore: deprecated_member_use
+      color: Colors.black.withOpacity(0.2),
+      width: MediaQuery.of(context).size.width * 0.85, // Largura ajustada
+      height: MediaQuery.of(context).size.height * 0.085,
+
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: Color(0XFFb0c32e)),
+          side: BorderSide(color: Color(0XFFA6B92E)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -29,7 +32,7 @@ class AvaliatonButton extends StatelessWidget {
           children: [
             Icon(
               Icons.assignment,
-              color: Colors.white,
+              color: Color(0XFFA6B92E),
               size: MediaQuery.of(context).size.width * 0.12, // Ícone ajustado
             ),
             SizedBox(
@@ -42,7 +45,7 @@ class AvaliatonButton extends StatelessWidget {
                     CrossAxisAlignment.start, // Alinhamento à esquerda
                 children: [
                   Text(
-                    'AVALIAÇÕES',
+                    'Avaliações',
                     style: principalFont.medium(
                       color: Colors.white,
                       fontSize: MediaQuery.of(context).size.width *
@@ -53,8 +56,8 @@ class AvaliatonButton extends StatelessWidget {
                       height: MediaQuery.of(context).size.height *
                           0.005), // Espaçamento ajustado
                   Text(
-                    'VEJA SEUS RESULTADOS',
-                    style: principalFont.medium(
+                    'Veja suas avaliações',
+                    style: secondFont.medium(
                       color: Colors.white,
                       fontSize: MediaQuery.of(context).size.width *
                           0.03, // Tamanho menor para o subtítulo

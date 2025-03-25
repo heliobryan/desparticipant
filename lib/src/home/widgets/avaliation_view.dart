@@ -122,72 +122,64 @@ class AvaliationView extends StatelessWidget {
     final score = double.tryParse(result) ?? 0.0;
 
     return Container(
-      width: 320,
-      height: 250,
+      width: 400,
       decoration: BoxDecoration(
-        border: Border.all(
-          color: const Color(0XFFb0c32e),
-        ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(12),
-        ),
+        color: Colors.white,
+        border: Border.all(color: const Color(0XFFb0c32e)),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return Center(
-                  child: Text(
-                    evaluationName,
-                    textAlign: TextAlign.center,
-                    style: principalFont.medium(
-                      color: Colors.white,
-                      fontSize: constraints.maxWidth *
-                          0.05, // Responsivo ao tamanho do card
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Cabeçalho com cor diferente
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: Color(0XFFb0c32e), // Cor do cabeçalho
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+            child: Text(evaluationName,
+                textAlign: TextAlign.center,
+                style: secondFont.bold(color: Colors.white, fontSize: 20)),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Text(
+                  'Resultado:',
+                  style: principalFont.bold(color: Colors.black, fontSize: 20),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  "$result $measurement",
+                  style:
+                      secondFont.bold(color: Color(0XFFb0c32e), fontSize: 17),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Nota Final:',
+                  style: principalFont.bold(color: Colors.black, fontSize: 20),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: 120,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                  ),
+                  child: Center(
+                    child: Text(
+                      calculateFinalScore(itemId, score),
+                      style: secondFont.bold(color: Colors.white, fontSize: 17),
                     ),
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'RESULTADO:',
-              style: principalFont.medium(color: Colors.white),
-            ),
-            Text(
-              "$result $measurement",
-              style: principalFont.medium(color: Colors.white),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'NOTA FINAL:',
-              style: principalFont.medium(color: Colors.white),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              width: 80,
-              height: 40,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color(0XFFb0c32e),
                 ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(12),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  calculateFinalScore(itemId, score),
-                  style: principalFont.medium(color: Colors.white),
-                ),
-              ),
+              ],
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

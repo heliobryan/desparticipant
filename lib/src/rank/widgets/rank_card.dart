@@ -25,18 +25,28 @@ class RankCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
         border: Border(
           left: BorderSide(
             color: borderColor,
-            width: 4,
+            width: 8,
           ),
-          top: const BorderSide(color: Color(0xFF3C3C3C), width: 2),
-          right: const BorderSide(color: Color(0XFFb0c32e), width: 1),
-          bottom: const BorderSide(color: Color(0xFF3C3C3C), width: 2),
+          top: BorderSide(
+            color: borderColor,
+            width: 1,
+          ),
+          right: BorderSide(
+            color: borderColor,
+            width: 1,
+          ),
+          bottom: BorderSide(
+            color: borderColor,
+            width: 1,
+          ),
         ),
-        color: const Color(0xFF2C2C2C),
+        color: Colors.white,
       ),
-      width: 410,
+      width: 350,
       height: 90,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -48,41 +58,54 @@ class RankCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 '$ranking',
-                style: principalFont.bold(color: const Color(0xFFB0B0B0)),
+                style: principalFont.bold(color: Colors.black, fontSize: 15),
               ),
               const SizedBox(height: 5),
-              const Icon(
+              Icon(
                 Icons.workspace_premium,
                 size: 20,
-                color: Color(0xFFB0B0B0),
+                color: borderColor,
               ),
             ],
           ),
-          const SizedBox(width: 5),
-          const Icon(
-            Icons.account_circle_outlined,
-            size: 60,
-            color: Color(0xFFB0B0B0),
-          ),
           const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.all(
+              1,
+            ),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Color(0XFFb0c32e),
+                width: 2,
+              ),
+            ),
+            child: Icon(
+              Icons.account_circle_outlined,
+              size: 60,
+              color: Color(0xFFB0B0B0),
+            ),
+          ),
+          const SizedBox(width: 15),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
                 Flexible(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
                       name,
-                      style: principalFont.bold(
-                        color: const Color(0xFFB0B0B0),
-                        fontSize: 15,
+                      style: secondFont.bold(
+                        color: Colors.black,
+                        fontSize: 20,
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(height: 5),
                 Flexible(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -90,7 +113,7 @@ class RankCard extends StatelessWidget {
                     child: Text(
                       '$position - $category',
                       style: principalFont.bold(
-                        color: const Color(0xFFB0B0B0),
+                        color: Colors.black,
                         fontSize: 10,
                       ),
                     ),
@@ -103,7 +126,7 @@ class RankCard extends StatelessWidget {
                     child: Text(
                       team,
                       style: principalFont.bold(
-                        color: const Color(0xFFB0B0B0),
+                        color: Colors.black,
                         fontSize: 10,
                       ),
                     ),
@@ -116,17 +139,16 @@ class RankCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: Container(
-              width: 50,
-              height: 50,
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
-                color: Colors.transparent,
+                color: borderColor,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0XFFb0c32e), width: 2),
               ),
               child: Center(
                 child: Text(
                   '$score',
-                  style: principalFont.bold(color: const Color(0XffB0B0B0)),
+                  style: principalFont.bold(color: Colors.black),
                 ),
               ),
             ),

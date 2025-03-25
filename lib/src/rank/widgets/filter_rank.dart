@@ -35,19 +35,19 @@ class _FilterRankState extends State<FilterRank> {
                     final subValue = 7 + index;
                     return ListTile(
                       title: Text(
-                        "SUB $subValue",
-                        style: principalFont.medium(
+                        "Sub $subValue",
+                        style: secondFont.medium(
                             color: const Color(0XffB0B0B0), fontSize: 20),
                       ),
                       onTap: () {
                         setState(() {
                           selectedCategory =
-                              "SUB $subValue"; // Atualiza a categoria selecionada
+                              "Sub $subValue"; // Atualiza a categoria selecionada
                         });
                         debugPrint(
                             '[FilterRank] Categoria selecionada: SUB $subValue');
                         widget.onCategorySelected(
-                            "SUB $subValue"); // Passa para o filtro em RankPage
+                            "Sub $subValue"); // Passa para o filtro em RankPage
                         Navigator.pop(context); // Fecha o modal
                       },
                     );
@@ -64,9 +64,13 @@ class _FilterRankState extends State<FilterRank> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 120,
-      height: 50,
+      width: 150,
+      height: 40,
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          bottomLeft: Radius.circular(12),
+        ),
         border: Border.all(
           color: Color(0XFFb0c32e),
         ),
@@ -75,13 +79,8 @@ class _FilterRankState extends State<FilterRank> {
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.transparent),
         ),
-        child: Text(
-          selectedCategory,
-          style: const TextStyle(
-              color: Color(0XffB0B0B0),
-              fontSize: 15,
-              fontWeight: FontWeight.bold),
-        ),
+        child: Text(selectedCategory,
+            style: principalFont.bold(color: Color(0XFFA6B92E))),
         onPressed: () => _showFilterRankModal(context),
       ),
     );
