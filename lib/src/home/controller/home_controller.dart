@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_final_fields
-import 'package:des/src/profile/screens/datauser_page.dart';
 import 'package:des/src/profile/screens/profile_page.dart';
 import 'package:des/src/rank/screens/rank_page.dart';
 import 'package:des/src/marketplace/screens/market_page.dart';

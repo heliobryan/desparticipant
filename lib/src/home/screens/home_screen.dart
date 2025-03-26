@@ -7,7 +7,6 @@ import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/services/home_services.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AlternateHome extends StatefulWidget {

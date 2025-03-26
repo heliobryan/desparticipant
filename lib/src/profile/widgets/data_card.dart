@@ -16,7 +16,6 @@ class DataCard extends StatelessWidget {
             color: Colors.black.withOpacity(0.2),
             width: MediaQuery.of(context).size.width * 0.85, // Largura ajustada
             height: MediaQuery.of(context).size.height * 0.085,
-
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: Color(0XFFA6B92E)),

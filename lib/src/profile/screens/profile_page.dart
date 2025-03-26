@@ -1,15 +1,13 @@
-// ignore_for_file: use_build_context_synchronously, unused_field, unused_local_variable, deprecated_member_use
-
+// ignore_for_file: use_build_context_synchronously, unused_field, unused_local_variable, deprecated_member_use, prefer_final_fields
 import 'dart:developer';
 import 'dart:io';
 import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalConstants/images.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:des/src/home/widgets/avaliation_view.dart';
-import 'package:des/src/profile/cards/card.dart';
-import 'package:des/src/profile/datauser/data_user.dart';
 import 'package:des/src/profile/graph/graph.dart';
 import 'package:des/src/profile/screens/datauser_page.dart';
+import 'package:des/src/profile/screens/playerstats_page.dart';
 import 'package:des/src/profile/services/profile_service.dart';
 import 'package:des/src/profile/widgets/avaliation_mental.dart';
 import 'package:des/src/profile/widgets/avaliation_tatic.dart';
@@ -413,41 +411,32 @@ class _ProfilePageState extends State<ProfilePage>
       _isLoading = false;
     });
 
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Center(
-          child: Material(
-            color: Colors.transparent,
-            child: PlayerCard(
-              agiValue: agiValue,
-              pesoValue: pesoValue,
-              alturaValue: alturaValue,
-              embaixaValue: embaixaValue,
-              finalValue: finValue,
-              passValue: passValue,
-              driValue: driValue,
-              userName: currentUserName,
-              position: currentPosition,
-              userImagePath: userImagePath,
-              passValue2: pass2Value,
-              final2Value: fin2Value,
-            ),
-          ),
-        );
-      },
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => StatsPage(
+          agiValue: agiValue,
+          pesoValue: pesoValue,
+          alturaValue: alturaValue,
+          embaixaValue: embaixaValue,
+          finalValue: finValue,
+          passValue: passValue,
+          driValue: driValue,
+          userName: currentUserName,
+          position: currentPosition,
+          userImagePath: userImagePath,
+          passValue2: pass2Value,
+          final2Value: fin2Value,
+        ),
+      ),
     );
   }
 
   void toggleDadosUser() async {
-    // Buscar as preferências do usuário
     final prefs = await SharedPreferences.getInstance();
     final currentUserName = userName ?? prefs.getString('userName') ?? '';
     final currentPosition = position ?? prefs.getString('position') ?? '';
     final userImagePath = prefs.getString('userImagePath') ?? '';
 
-    // Mapeando os scores de Peso (item 16) e Altura (item 17) a partir dos judgments
     final Map<int, String> resultsMap = {
       for (var judgment in judgments!)
         if (judgment != null &&

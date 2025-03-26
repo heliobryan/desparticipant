@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, deprecated_member_use
 
 import 'dart:convert';
 import 'package:des/src/GlobalConstants/font.dart';
@@ -280,7 +280,7 @@ class _RankPageState extends State<RankPage> {
 
                                 // Define a cor da borda
                                 Color borderColor;
-                                if (index < 15) {
+                                if (index < 2) {
                                   borderColor = const Color(
                                       0xFFB0E0E6); // Primeiros 15 colocados
                                 } else {
@@ -290,7 +290,7 @@ class _RankPageState extends State<RankPage> {
                                   final double ratio = (index - 15) / maxIndex;
                                   borderColor = Color.lerp(
                                       const Color(0xFFC52613),
-                                      Colors.black,
+                                      const Color(0xFFC52613),
                                       ratio)!;
                                 }
 

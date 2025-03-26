@@ -268,15 +268,14 @@ class _PlayerCardstate extends State<PlayerCard> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
           colors: [
-            cardColor, //ESSA COR
+            Color(0xFF99C666), //ESSA COR
             Color(0xFF1E1E1E),
             Color(0xFF1E1E1E),
           ],
         ),
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
         boxShadow: [],
       ),
       width: 400,
@@ -285,10 +284,9 @@ class _PlayerCardstate extends State<PlayerCard> {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: cardColor,
+              color: Color(0xFF99C666),
               width: 1,
             ),
-            borderRadius: const BorderRadius.all(Radius.circular(46)),
           ),
           width: 400,
           height: 700,

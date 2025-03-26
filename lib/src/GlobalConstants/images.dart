@@ -7,5 +7,5 @@ class Assets {
   static const String title = 'assets/images/title.png';
   static const String background = 'assets/images/background.png';
   static const String background1 = 'assets/images/background1.png';
-  static const String cardcontour = 'assets/images/cardcontour.svg';
+  static const String card = 'assets/images/card.svg';
 }

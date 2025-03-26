@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:des/src/GlobalConstants/font.dart';
 import 'package:des/src/GlobalConstants/images.dart';
 import 'package:des/src/GlobalWidgets/exit_button.dart';
 import 'package:flutter/material.dart';

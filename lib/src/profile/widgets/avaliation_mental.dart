@@ -10,6 +10,7 @@ class AvaliationMental extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // ignore: deprecated_member_use
       color: Colors.black.withOpacity(0.2),
       width: MediaQuery.of(context).size.width * 0.85, // Largura ajustada
       height: MediaQuery.of(context).size.height * 0.085,

@@ -85,6 +85,7 @@ flutter:
     - assets/images/background.png
     - assets/images/background1.png
     - assets/images/title.svg
+    - assets/images/card.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
